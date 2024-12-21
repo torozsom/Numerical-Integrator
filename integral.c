@@ -115,14 +115,14 @@ void integrate(char *integrand, char *interval) {
     remove_spaces(integrand);
 
     if (!validate_integrand(integrand)) {
-        free_resources(integrand, interval, NULL);
+        free_resources(integrand, interval, nullptr);
         return;
     }
 
     double start, end;
 
     if (!validate_interval(interval, &start, &end)) {
-        free_resources(integrand, interval, NULL);
+        free_resources(integrand, interval, nullptr);
         return;
     }
 
@@ -136,18 +136,18 @@ void integrate(char *integrand, char *interval) {
 
     const int iterations = get_iteration_count();
     if (iterations == -1) {
-        free_resources(integrand, interval, NULL);
+        free_resources(integrand, interval, nullptr);
         return;
     }
 
     const double subinterval_size = (end - start) / iterations;
-    const double step = 10e-7;
+    constexpr double step = 10e-7;
     double integral = 0;
 
     Node *expression = parse(integrand);
     if (!expression) {
         perror("Error parsing expression.\n");
-        free_resources(integrand, interval, NULL);
+        free_resources(integrand, interval, nullptr);
         return;
     }
 

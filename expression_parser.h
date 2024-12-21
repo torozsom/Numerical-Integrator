@@ -14,12 +14,12 @@
 #define NEW_NODE(TYPE) ((Node *)malloc(sizeof(Node)))
 
 
-typedef struct {
+typedef struct Variable {
     char name;
 } Variable;
 
 
-typedef struct {
+typedef struct Number {
     double value;
 } Number;
 
@@ -27,18 +27,18 @@ typedef struct {
 typedef double (*Func)(double);
 
 
-typedef struct {
+typedef struct Function {
     char name[FUNCTION_NAME_MAX];
     Func func;
 } Function;
 
 
-typedef struct {
+typedef struct Operator {
     char symbol;
 } Operator;
 
 
-typedef enum {
+typedef enum NodeType {
     NODE_VARIABLE,
     NODE_NUMBER,
     NODE_FUNCTION,
@@ -46,7 +46,7 @@ typedef enum {
 } NodeType;
 
 
-typedef union {
+typedef union NodeData {
     Variable variable;
     Number number;
     Function function;
@@ -61,15 +61,14 @@ typedef struct Node {
 } Node;
 
 
-typedef struct {
+typedef struct NodeStack {
     Node *data[STACK_SIZE];
     int top;
 } NodeStack;
 
 
-typedef struct {
+typedef struct FunctionEntry {
     const char *name;
-
     double (*operation)(double);
 } FunctionEntry;
 

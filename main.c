@@ -103,7 +103,7 @@ void log_file_content(const char *filename) {
  * saved functions from a file, or exiting the program. User inputs are processed
  * in a loop until an exit condition is met.
  */
-int main(const int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
     print_rules();
     int num;
 
@@ -126,6 +126,7 @@ int main(const int argc, char *argv[]) {
 
             case 9:
                 return 0;
+
 
             default:
                 break;

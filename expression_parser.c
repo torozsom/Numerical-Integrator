@@ -44,7 +44,7 @@ double cot(const double x) {
 void push(NodeStack *stack, Node *node) {
     if (stack->top == STACK_SIZE - 1) {
         fprintf(stderr, "Error: Stack overflow.\n");
-        exit(1); // Stack overflow error
+        exit(1);
     }
     stack->data[++stack->top] = node;
 }
@@ -67,7 +67,7 @@ void push(NodeStack *stack, Node *node) {
 Node *pop(NodeStack *stack) {
     if (stack->top < 0) {
         fprintf(stderr, "Error: Stack underflow.\n");
-        exit(1); // Stack underflow error
+        exit(1);
     }
     return stack->data[stack->top--];
 }
@@ -79,10 +79,10 @@ Node *pop(NodeStack *stack) {
  * @param node A pointer to the Node structure to initialize.
  * @param type The type of the node to assign.
  */
-void initialize_node(Node *node, NodeType type) {
+void initialize_node(Node *node, const NodeType type) {
     node->type = type;
-    node->left = NULL;
-    node->right = NULL;
+    node->left = nullptr;
+    node->right = nullptr;
 }
 
 
@@ -97,7 +97,7 @@ void initialize_node(Node *node, NodeType type) {
  * @return A pointer to the newly created variable node. Exits the program
  *         on memory allocation failure.
  */
-Node *create_variable(char name) {
+Node *create_variable(const char name) {
     Node *node = NEW_NODE(NODE_VARIABLE);
     if (!node) {
         fprintf(stderr, "Error: Memory allocation failed for variable node.\n");
@@ -116,7 +116,7 @@ Node *create_variable(char name) {
  * @return A pointer to the created number node. If memory allocation fails,
  *         the program will terminate with an error message.
  */
-Node *create_number(double value) {
+Node *create_number(const double value) {
     Node *node = NEW_NODE(NODE_NUMBER);
     if (!node) {
         fprintf(stderr, "Error: Memory allocation failed for number node.\n");
@@ -136,15 +136,18 @@ Node *create_number(double value) {
  * @return A pointer to the newly created function node. If memory allocation fails,
  *         the program exits with an error.
  */
-Node *create_function(const char *name, Func func) {
+Node *create_function(const char *name, const Func func) {
     Node *node = NEW_NODE(NODE_FUNCTION);
+
     if (!node) {
         fprintf(stderr, "Error: Memory allocation failed for function node.\n");
         exit(1);
     }
+
     initialize_node(node, NODE_FUNCTION);
     strncpy(node->data.function.name, name, FUNCTION_NAME_MAX);
     node->data.function.func = func;
+
     return node;
 }
 
@@ -155,14 +158,17 @@ Node *create_function(const char *name, Func func) {
  * @param symbol The symbol representing the operator (e.g., '+', '-', '*', '/').
  * @return Pointer to the newly created operator node.
  */
-Node *create_operator(char symbol) {
+Node *create_operator(const char symbol) {
     Node *node = NEW_NODE(NODE_OPERATOR);
+
     if (!node) {
         fprintf(stderr, "Error: Memory allocation failed for operator node.\n");
         exit(1);
     }
+
     initialize_node(node, NODE_OPERATOR);
     node->data.operator.symbol = symbol;
+
     return node;
 }
 
@@ -179,13 +185,13 @@ Node *create_operator(char symbol) {
  *         or NULL if no matching function is found.
  */
 Func find_function(const char *name) {
-    const size_t function_count = sizeof(FUNCTIONS) / sizeof(FUNCTIONS[0]);
-    for (size_t i = 0; i < function_count; i++) {
-        if (strcmp(name, FUNCTIONS[i].name) == 0) {
+    constexpr size_t function_count = sizeof(FUNCTIONS) / sizeof(FUNCTIONS[0]);
+
+    for (size_t i = 0; i < function_count; i++)
+        if (strcmp(name, FUNCTIONS[i].name) == 0)
             return FUNCTIONS[i].operation;
-        }
-    }
-    return NULL; // No matching function found
+
+    return nullptr;
 }
 
 
@@ -206,6 +212,7 @@ Func find_function(const char *name) {
 Node *parse(char *expression) {
     NodeStack stack = {.top = -1};
     char *token = strtok(expression, " ");
+
     while (token != NULL) {
         if (strcmp(token, "x") == 0) {
             push(&stack, create_variable('x'));
@@ -230,8 +237,9 @@ Node *parse(char *expression) {
                 push(&stack, create_number(value));
             }
         }
-        token = strtok(NULL, " ");
+        token = strtok(nullptr, " ");
     }
+
     return stack.data[0];
 }
 
@@ -243,30 +251,35 @@ Node *parse(char *expression) {
  * based on the type of the node, and returns the evaluated value. It supports variables,
  * numerical constants, operators, and functions.
  *
- * @param node Pointer to the root node of the syntax tree representing the expression.
+ * @param head Pointer to the root node of the syntax tree representing the expression.
  * @param x The value of the variable in the expression.
  * @return The evaluated result of the expression for the given value of x.
  */
-double evaluate(Node *node, double x) {
-    if (!node) return 0.0;
-    switch (node->type) {
+double evaluate(Node *head, const double x) {
+    if (!head) return 0.0;
+    switch (head->type) {
         case NODE_VARIABLE:
             return x;
         case NODE_NUMBER:
-            return node->data.number.value;
+            return head->data.number.value;
+        case NODE_FUNCTION:
+            return head->data.function.func(evaluate(head->left, x));
         case NODE_OPERATOR:
-            switch (node->data.operator.symbol) {
-                case '+': return evaluate(node->left, x) + evaluate(node->right, x);
-                case '-': return evaluate(node->left, x) - evaluate(node->right, x);
-                case '*': return evaluate(node->left, x) * evaluate(node->right, x);
-                case '/': return evaluate(node->left, x) / evaluate(node->right, x);
-                case '^': return pow(evaluate(node->left, x), evaluate(node->right, x));
+            switch (head->data.operator.symbol) {
+                case '+':
+                    return evaluate(head->left, x) + evaluate(head->right, x);
+                case '-':
+                    return evaluate(head->left, x) - evaluate(head->right, x);
+                case '*':
+                    return evaluate(head->left, x) * evaluate(head->right, x);
+                case '/':
+                    return evaluate(head->left, x) / evaluate(head->right, x);
+                case '^':
+                    return pow(evaluate(head->left, x), evaluate(head->right, x));
                 default:
-                    fprintf(stderr, "Error: Unknown operator '%c'.\n", node->data.operator.symbol);
+                    fprintf(stderr, "Error: Unknown operator '%c'.\n", head->data.operator.symbol);
                     exit(1);
             }
-        case NODE_FUNCTION:
-            return node->data.function.func(evaluate(node->left, x));
         default:
             fprintf(stderr, "Error: Unknown node type.\n");
             exit(1);
@@ -286,6 +299,6 @@ void free_tree(Node *node) {
         free_tree(node->left);
         free_tree(node->right);
         free(node);
-        node = NULL;
+        node = nullptr;
     }
 }

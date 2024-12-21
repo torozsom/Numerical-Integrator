@@ -18,8 +18,8 @@ void read_file(const char *filename, char **last, char **second_last) {
         return;
     }
 
-    char *last_line = NULL;
-    char *second_last_line = NULL;
+    char *last_line = nullptr;
+    char *second_last_line = nullptr;
     int size = INITIAL_SIZE;
 
     last_line = (char *) malloc(size * sizeof(char)+1);
