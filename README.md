@@ -19,11 +19,13 @@ project bridges the gap between mathematical computation and user-friendly softw
 ### 🎨 Graphical User Interface
 
 - A clean and intuitive GUI for inputting expressions and integration bounds.
-- Visual feedback for integration results.
+- Using the GTK+ library and a CSS stylesheet for a modern look and feel.
 
 ### 🛠 Debugging and Development
 
 - Includes a memory debugging utility (`debugmalloc.h`) to ensure stability and catch memory leaks during development.
+- In order to apply the styles from the css file, you need to copy the styles.css to the same directory as the
+  executable file.
 
 ---
 
@@ -73,7 +75,8 @@ project bridges the gap between mathematical computation and user-friendly softw
 1. Launch the program.
 2. Enter the mathematical function to integrate in **RPN format** (e.g., `x sin`).
 3. Specify the integration bounds (e.g., `a = -2.3, b = 12.8`).
-4. View the computed integral value.
+4. Set the amount of intervals of the integration.
+5. See the results.
 
 ### Note:
 

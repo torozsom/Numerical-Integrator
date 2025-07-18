@@ -24,7 +24,8 @@ void free_resources(char *integrand, char *interval, Node *expression) {
         free(integrand);
     if (interval)
         free(interval);
-    if (expression) free_tree(expression);
+    if (expression)
+        free_tree(expression);
 }
 
 
