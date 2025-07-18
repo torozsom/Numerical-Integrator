@@ -1,5 +1,17 @@
-#include "debugmalloc.h"
+/**
+ * @file main.c
+ * @brief Main entry point for the numerical integration program.
+ *
+ * This program provides a user interface for performing numerical integration
+ * using Reverse Polish Notation. It allows users to input functions and intervals,
+ * and it integrates the functions based on the provided inputs.
+ *
+ * The program also includes functionality to read and display saved functions
+ * from a file.
+ */
 
+
+#include "debugmalloc.h"
 #include "gui.h"
 #include "integral.h"
 #include "expression_parser.h"
@@ -118,20 +130,16 @@ int main(int argc, char *argv[]) {
                 numerical_integration(argc, argv, filename);
                 break;
 
-
             case 2:
                 log_file_content(filename);
                 break;
 
-
             case 9:
                 return 0;
-
 
             default:
                 break;
         }
-
     } while (num == 1 || num == 2 || num == 9);
 
 

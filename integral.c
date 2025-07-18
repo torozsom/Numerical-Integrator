@@ -1,9 +1,15 @@
+/**
+ * @file integral.c
+ * @brief Implementation of numerical integration functions.
+ *
+ * This file contains functions to perform numerical integration of mathematical expressions
+ * over specified intervals. It includes validation of input, parsing of expressions, and
+ * computation of integrals using the supremum method.
+ */
+
+
 #include "integral.h"
 #include "debugmalloc.h"
-
-#define MAX_INTEGRAND_LENGTH 100
-#define MIN_ITERATIONS 1
-#define MAX_ITERATIONS 1000000
 
 
 /**

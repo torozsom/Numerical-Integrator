@@ -1,3 +1,13 @@
+/**
+ * @file gui.c
+ * @brief Implementation of the graphical user interface for numerical integration.
+ *
+ * This file contains functions to create a GTK-based GUI for entering mathematical functions,
+ * specifying integration intervals, and calculating results. It includes functionality for
+ * reading from files, inserting text into entry fields, and managing button interactions.
+ */
+
+
 #include "gui.h"
 #include "debugmalloc.h"
 
@@ -65,9 +75,12 @@ void read_file(const char *filename, char **last, char **second_last) {
  *            After execution, the string will no longer contain leading or trailing spaces.
  */
 void remove_spaces(char *str) {
-    size_t start = 0, end = strlen(str) - 1;
+    size_t start = 0;
+    size_t end = strlen(str) - 1;
+
     while (isspace(str[start]))
         start++;
+
     while (end > start && isspace(str[end]))
         end--;
 
@@ -75,6 +88,42 @@ void remove_spaces(char *str) {
     for (i = start, j = 0; i <= end; i++, j++)
         str[j] = str[i];
     str[j] = '\0';
+}
+
+
+/**
+ * @brief Applies modern CSS styling to the GTK application by loading from external CSS file.
+ *
+ * This function loads custom CSS styles from 'styles.css' file to give the application
+ * a modern, professional appearance with improved colors, spacing, and visual effects.
+ *
+ * @param css_file_path Path to the CSS file containing the styling rules.
+ */
+void apply_styling(const char *css_file_path) {
+    GtkCssProvider *provider = gtk_css_provider_new();
+    GdkDisplay *display = gdk_display_get_default();
+    GdkScreen *screen = gdk_display_get_default_screen(display);
+
+    GError *error = nullptr;
+    gboolean success = gtk_css_provider_load_from_file(provider,
+                                                       g_file_new_for_path(css_file_path),
+                                                       &error);
+
+    if (!success) {
+        if (error) {
+            g_printerr("Failed to load CSS file '%s': %s\n", css_file_path, error->message);
+            g_error_free(error);
+        } else {
+            g_printerr("Failed to load CSS file '%s': Unknown error\n", css_file_path);
+        }
+        g_object_unref(provider);
+        return;
+    }
+
+    gtk_style_context_add_provider_for_screen(screen,
+                                             GTK_STYLE_PROVIDER(provider),
+                                             GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(provider);
 }
 
 
@@ -100,95 +149,124 @@ void run_gui(int *argc, char ***argv) {
         "sin", "cos", "tg", "ctg", "ln", "exp"
     };
 
+    const char *button_classes[] = {
+        "operator", "operator", "operator", "operator", "operator", "operator",
+        "math-function", "math-function", "math-function", "math-function", "math-function", "math-function"
+    };
+
     gtk_init(argc, argv);
 
+    // Apply modern CSS styling from external file
+    apply_styling("styles.css");
+
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "Numerical Integral");
-    gtk_window_set_default_size(GTK_WINDOW(window), 450,
-                                700); // Default settings
+    gtk_window_set_title(GTK_WINDOW(window), "✨ Numerical Integration Calculator");
+    gtk_window_set_default_size(GTK_WINDOW(window), 650, 550);
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+
+    GdkPixbuf *icon = gdk_pixbuf_new_from_file("icon.png", nullptr);
+    if (icon) {
+        gtk_window_set_icon(GTK_WINDOW(window), icon);
+        g_object_unref(icon);
+    }
 
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
+    GtkWidget *main_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_container_add(GTK_CONTAINER(window), main_container);
+    gtk_widget_set_margin_top(main_container, 15);
+    gtk_widget_set_margin_bottom(main_container, 15);
+    gtk_widget_set_margin_left(main_container, 15);
+    gtk_widget_set_margin_right(main_container, 15);
+
+    GtkWidget *title_label = gtk_label_new("🧮 Mathematical Function Integration");
+    gtk_widget_set_name(title_label, "title");
+    GtkStyleContext *title_context = gtk_widget_get_style_context(title_label);
+    gtk_style_context_add_class(title_context, "title");
+    gtk_box_pack_start(GTK_BOX(main_container), title_label, FALSE, FALSE, 8);
+
     grids.func = gtk_grid_new();
-    gtk_container_add(GTK_CONTAINER(window), grids.func);
+    gtk_box_pack_start(GTK_BOX(main_container), grids.func, FALSE, FALSE, 8);
     gtk_widget_set_hexpand(grids.func, TRUE);
-    gtk_widget_set_vexpand(grids.func, TRUE);
+    gtk_grid_set_column_spacing(GTK_GRID(grids.func), 10);
+    gtk_grid_set_row_spacing(GTK_GRID(grids.func), 10);
 
     entry.func = gtk_entry_new();
-    gtk_entry_set_placeholder_text(GTK_ENTRY(entry.func), "∫ f(x) dx");
-    buttons.okFunc = gtk_button_new_with_label("OK!");
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry.func), "Enter function: ∫ f(x) dx");
+    gtk_widget_set_hexpand(entry.func, TRUE);
+
+    buttons.okFunc = gtk_button_new_with_label("✓ Confirm Function");
+    GtkStyleContext *ok_context = gtk_widget_get_style_context(buttons.okFunc);
+    gtk_style_context_add_class(ok_context, "ok-button");
 
     gtk_grid_attach(GTK_GRID(grids.func), entry.func, 0, 0, 1, 1);
     gtk_grid_attach_next_to(GTK_GRID(grids.func), buttons.okFunc, entry.func,
                             GTK_POS_RIGHT, 1, 1);
 
+    GtkWidget *buttons_label = gtk_label_new("🔢 Mathematical Functions & Operators");
+    gtk_box_pack_start(GTK_BOX(main_container), buttons_label, FALSE, FALSE, 6);
+
     grids.buttons = gtk_grid_new();
     gtk_grid_set_row_homogeneous(GTK_GRID(grids.buttons), TRUE);
     gtk_grid_set_column_homogeneous(GTK_GRID(grids.buttons), TRUE);
-
-    gtk_grid_attach_next_to(GTK_GRID(grids.func), grids.buttons, entry.func,
-                            GTK_POS_BOTTOM, 2, 1);
+    gtk_grid_set_row_spacing(GTK_GRID(grids.buttons), 6);
+    gtk_grid_set_column_spacing(GTK_GRID(grids.buttons), 6);
+    gtk_box_pack_start(GTK_BOX(main_container), grids.buttons, FALSE, FALSE, 8);
 
     buttons.matrix = malloc(12 * sizeof(GtkWidget *));
 
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 2; j++) {
-            buttons.matrix[i * 2 + j] =
-                    gtk_button_new_with_label(button_labels[i * 2 + j]);
-            PangoFontDescription *font_desc = pango_font_description_new();
-            pango_font_description_set_family(font_desc, "Times New Roman");
-            pango_font_description_set_size(font_desc, 15 * PANGO_SCALE);
-            gtk_widget_override_font(
-                buttons.matrix[i * 2 + j],
-                font_desc);
-            pango_font_description_free(font_desc);
+            int index = i * 2 + j;
+            buttons.matrix[index] = gtk_button_new_with_label(button_labels[index]);
 
-            gtk_grid_attach(GTK_GRID(grids.buttons), buttons.matrix[i * 2 + j], j,
-                            i, 1, 1);
-            gtk_widget_set_hexpand(buttons.matrix[i * 2 + j], TRUE);
-            gtk_widget_set_vexpand(buttons.matrix[i * 2 + j], TRUE);
+            GtkStyleContext *context = gtk_widget_get_style_context(buttons.matrix[index]);
+            gtk_style_context_add_class(context, button_classes[index]);
 
-            g_signal_connect(buttons.matrix[i * 2 + j], "clicked",
+            gtk_grid_attach(GTK_GRID(grids.buttons), buttons.matrix[index], j, i, 1, 1);
+            gtk_widget_set_hexpand(buttons.matrix[index], TRUE);
+            gtk_widget_set_vexpand(buttons.matrix[index], TRUE);
+
+            g_signal_connect(buttons.matrix[index], "clicked",
                              G_CALLBACK(insert_text), &entry);
         }
     }
 
-    g_signal_connect(buttons.okFunc, "clicked", G_CALLBACK(save_to_file),
-                     &entry);
-    g_signal_connect(buttons.okFunc, "clicked", G_CALLBACK(disable_button),
-                     NULL);
+    g_signal_connect(buttons.okFunc, "clicked", G_CALLBACK(save_to_file), &entry);
+    g_signal_connect(buttons.okFunc, "clicked", G_CALLBACK(disable_button), NULL);
+
+    labels.title = gtk_label_new("📏 Integration Interval");
+    gtk_box_pack_start(GTK_BOX(main_container), labels.title, FALSE, FALSE, 8);
 
     grids.interval = gtk_grid_new();
-    gtk_grid_set_row_homogeneous(GTK_GRID(grids.interval), TRUE);
+    gtk_grid_set_row_homogeneous(GTK_GRID(grids.interval), FALSE);
     gtk_grid_set_column_homogeneous(GTK_GRID(grids.interval), TRUE);
-
-    gtk_grid_attach_next_to(GTK_GRID(grids.func), grids.interval,
-                            grids.buttons, GTK_POS_BOTTOM, 2, 1);
-
-    labels.Title = gtk_label_new("Enter the interval: ");
-    gtk_misc_set_alignment(GTK_MISC(labels.Title), 0.5, 0);
-
-    gtk_grid_attach(GTK_GRID(grids.interval), labels.Title, 0, 0, 2, 1);
+    gtk_grid_set_row_spacing(GTK_GRID(grids.interval), 8);
+    gtk_grid_set_column_spacing(GTK_GRID(grids.interval), 8);
+    gtk_box_pack_start(GTK_BOX(main_container), grids.interval, FALSE, FALSE, 8);
 
     entry.start = gtk_entry_new();
-    gtk_entry_set_placeholder_text(GTK_ENTRY(entry.start), "Start:");
-    entry.end = gtk_entry_new();
-    gtk_entry_set_placeholder_text(GTK_ENTRY(entry.end), "End:");
-    buttons.okInterval = gtk_button_new_with_label("OK!");
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry.start), "Lower bound (a)");
+    gtk_widget_set_hexpand(entry.start, TRUE);
 
-    gtk_grid_attach(GTK_GRID(grids.interval), entry.start, 0, 1, 1, 1);
+    entry.end = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry.end), "Upper bound (b)");
+    gtk_widget_set_hexpand(entry.end, TRUE);
+
+    buttons.okInterval = gtk_button_new_with_label("🚀 Calculate Integral");
+    GtkStyleContext *calc_context = gtk_widget_get_style_context(buttons.okInterval);
+    gtk_style_context_add_class(calc_context, "ok-button");
+
+    gtk_grid_attach(GTK_GRID(grids.interval), entry.start, 0, 0, 1, 1);
     gtk_grid_attach_next_to(GTK_GRID(grids.interval), entry.end, entry.start,
                             GTK_POS_RIGHT, 1, 1);
-    gtk_grid_attach_next_to(GTK_GRID(grids.interval), buttons.okInterval,
-                            entry.start, GTK_POS_BOTTOM, 2, 1);
+    gtk_grid_attach(GTK_GRID(grids.interval), buttons.okInterval, 0, 1, 2, 1);
 
-    g_signal_connect(buttons.okInterval, "clicked", G_CALLBACK(save_interval),
-                     &entry);
+    g_signal_connect(buttons.okInterval, "clicked", G_CALLBACK(save_interval), &entry);
     g_signal_connect(buttons.okInterval, "clicked", G_CALLBACK(over), window);
 
     gtk_widget_show_all(window);
-
     gtk_main();
 
     free(buttons.matrix);

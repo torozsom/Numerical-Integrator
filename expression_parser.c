@@ -1,3 +1,12 @@
+/**
+ * @file expression_parser.c
+ * @brief Implementation of functions for parsing and evaluating mathematical expressions.
+ *
+ * This file contains the implementation of functions to parse mathematical expressions in Reverse Polish Notation (RPN),
+ * build an abstract syntax tree (AST), evaluate the expression for a given variable value, and manage memory for the nodes.
+ */
+
+
 #include "expression_parser.h"
 
 
@@ -257,13 +266,17 @@ Node *parse(char *expression) {
  */
 double evaluate(Node *head, const double x) {
     if (!head) return 0.0;
+
     switch (head->type) {
         case NODE_VARIABLE:
             return x;
+
         case NODE_NUMBER:
             return head->data.number.value;
+
         case NODE_FUNCTION:
             return head->data.function.func(evaluate(head->left, x));
+
         case NODE_OPERATOR:
             switch (head->data.operator.symbol) {
                 case '+':
@@ -280,6 +293,7 @@ double evaluate(Node *head, const double x) {
                     fprintf(stderr, "Error: Unknown operator '%c'.\n", head->data.operator.symbol);
                     exit(1);
             }
+
         default:
             fprintf(stderr, "Error: Unknown node type.\n");
             exit(1);

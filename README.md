@@ -1,21 +1,28 @@
 # Numerical Integrator
 
-Welcome to the **Numerical Integrator** project! This repository hosts a C program designed to compute definite integrals of mathematical functions using numerical methods. With an intuitive GUI and powerful expression parsing, this project bridges the gap between mathematical computation and user-friendly software design.
+Welcome to the **Numerical Integrator** project! This repository hosts a C program designed to compute definite
+integrals of mathematical functions using numerical methods. With an intuitive GUI and powerful expression parsing, this
+project bridges the gap between mathematical computation and user-friendly software design.
 
 ---
 
 ## Features
 
 ### 🚀 Core Functionality
-- **Numerical Integration**: Accurately calculate the definite integral of user-defined functions using Riemann's method.
+
+- **Numerical Integration**: Accurately calculate the definite integral of user-defined functions using Riemann's
+  method.
 - **Expression Parsing**: Robust mathematical expression parsing with support for Reverse Polish Notation (RPN).
-  - Only elementary functions such as polynomials, exponentials, trigonometric functions, and logarithms are supported.
+    - Only elementary functions such as polynomials, exponentials, trigonometric functions, and logarithms are
+      supported.
 
 ### 🎨 Graphical User Interface
+
 - A clean and intuitive GUI for inputting expressions and integration bounds.
 - Visual feedback for integration results.
 
 ### 🛠 Debugging and Development
+
 - Includes a memory debugging utility (`debugmalloc.h`) to ensure stability and catch memory leaks during development.
 
 ---
@@ -34,10 +41,12 @@ Welcome to the **Numerical Integrator** project! This repository hosts a C progr
 ## Build and Run
 
 ### Prerequisites
+
 - **C Compiler**: GCC or similar.
 - **CMake**: Build tool for project configuration.
 
 ### Steps
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/torozsom/numerical-integrator.git
@@ -67,6 +76,8 @@ Welcome to the **Numerical Integrator** project! This repository hosts a C progr
 4. View the computed integral value.
 
 ### Note:
-- The program utilizes the properties of the Riemann integral to perform calculations. Ensure the function is well-behaved over the integration bounds for accurate results.
+
+- The program utilizes the properties of the Riemann integral to perform calculations. Ensure the function is
+  well-behaved over the integration bounds for accurate results.
 
 ---

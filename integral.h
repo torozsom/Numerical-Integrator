@@ -1,3 +1,12 @@
+/**
+ * @file integral.h
+ * @brief Header file for numerical integration functions.
+ *
+ * This file contains function declarations and definitions for performing numerical integration,
+ * validating input, and managing resources.
+ */
+
+
 #ifndef INTEGRAL_H
 #define INTEGRAL_H
 
@@ -14,7 +23,7 @@
 #define INITIAL_SIZE 256
 #define MAX_INTEGRAND_LENGTH 100
 #define MIN_ITERATIONS 1
-#define MAX_ITERATIONS 1000000
+#define MAX_ITERATIONS 10000000
 
 
 void free_resources(char *integrand, char *interval, Node *expression);
