@@ -14,7 +14,7 @@ grid {
 /* Entry field styling */
 entry {
     background: rgba(255, 255, 255, 0.95);
-    border: 2px solid #4a90e2;
+    border: 2.5px solid #4a90e2;
     border-radius: 8px;
     padding: 10px 14px;
     font-size: 24px;
@@ -32,7 +32,7 @@ entry:focus {
 /* Button styling */
 button {
     background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
-    border: none;
+    border: 1px solid black;
     border-radius: 8px;
     color: white;
     font-size: 20px;
