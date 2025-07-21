@@ -29,58 +29,131 @@ project bridges the gap between mathematical computation and user-friendly softw
 
 ---
 
-## Project Structure
+## 📦 Project Structure
 
-- **`main.c`**: Entry point for the program. Coordinates initialization and execution.
-- **`integral.c` / `integral.h`**: Implements numerical integration logic.
-- **`expression_parser.c` / `expression_parser.h`**: Handles mathematical expression parsing.
-- **`gui.c` / `gui.h`**: Provides the graphical user interface.
-- **`debugmalloc.h`**: Utility for debugging memory allocation issues.
-- **`CMakeLists.txt`**: Build configuration for the project.
+```
+src/
+├── integrator/       # Core integration logic
+├── parser/          # Expression parsing engine
+├── program/         # Program entry point
+├── ui/             # User interface components
+└── memcheck/        # Memory debugging utilities
+```
 
----
+## 🏗 Core Components
 
-## Build and Run
+### Expression Tree Architecture
+
+The parser uses a tree-based structure to represent mathematical expressions. Here are the key components:
+
+#### Node Types
+```c
+typedef enum NodeType {
+    NODE_VARIABLE,   // Variables (e.g., 'x')
+    NODE_NUMBER,     // Numeric constants
+    NODE_FUNCTION,   // Mathematical functions
+    NODE_OPERATOR    // Mathematical operators
+} NodeType;
+```
+
+#### Key Data Structures
+```c
+// Variable representation
+typedef struct Variable {
+    char name;       // Variable identifier
+} Variable;
+
+// Numeric value
+typedef struct Number {
+    double value;    // Numeric constant
+} Number;
+
+// Mathematical function
+typedef struct Function {
+    char name[FUNCTION_NAME_MAX];
+    double (*func)(double);  // Function pointer
+} Function;
+```
+
+## 🔧 Core Functions
+
+### Integration Module
+
+```c
+// Performs numerical integration
+void integrate(char *integrand, char *interval);
+
+// Validates integration bounds
+bool validate_interval(const char *interval, 
+                      double *start, double *end);
+
+// Finds maximum value in interval
+double find_supremum(Node* expr, double start, 
+                    double end, double step);
+```
+
+### Expression Parser
+
+```c
+// Parses RPN expression into tree
+Node* parse_expression(const char *expression);
+
+// Evaluates expression with given variable value
+double evaluate(Node *root, double x);
+```
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- **C Compiler**: GCC or similar.
-- **CMake**: Build tool for project configuration.
+- C Compiler (GCC recommended)
+- GTK+ 3.0 Development Libraries
+- CMake (3.10 or higher)
 
-### Steps
+### Building the Project
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/torozsom/numerical-integrator.git
+   git clone https://github.com/yourusername/numerical-integrator.git
    cd numerical-integrator
    ```
-2. Configure the project using CMake:
+
+2. Create build directory:
    ```bash
    mkdir build && cd build
-   cmake ..
    ```
-3. Build the project:
+
+3. Configure and build:
    ```bash
+   cmake ..
    make
    ```
-4. Run the program:
+
+4. Copy required assets:
    ```bash
-   ./numerical_integrator
+   cp ../src/ui/styles.css .
    ```
 
+## 🎯 Usage
+
+1. Launch the program:
+   ```bash
+   ./numerical_integral
+   ```
+
+2. Using the Interface:
+   - Enter mathematical expressions using RPN notation
+   - Use the GUI buttons for operators and functions
+   - Enter numbers via keyboard
+   - Specify integration bounds when prompted
+
+### Example Input
+
+```
+x x * 2 +    # Represents x² + 2
+[0, 5]       # Integration bounds
+```
+
 ---
 
-## Usage
-
-1. Launch the program.
-2. Enter the mathematical function to integrate in **RPN format** (e.g., `x sin`).
-3. Specify the integration bounds (e.g., `a = -2.3, b = 12.8`).
-4. Set the amount of intervals of the integration.
-5. See the results.
-
-### Note:
-
-- The program utilizes the properties of the Riemann integral to perform calculations. Ensure the function is
-  well-behaved over the integration bounds for accurate results.
-
----
+*Last updated: July 2025*

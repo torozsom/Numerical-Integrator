@@ -16,10 +16,18 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
 endif ()
 
 add_executable(numerical_integral
-        main.c
-        gui.c
-        expression_parser.c
-        integral.c)
+        src/program/main.c
+        src/ui/gui.c
+        src/parser/expression_parser.c
+        src/integrator/integral.c)
 
-target_include_directories(numerical_integral PRIVATE ${GTK3_INCLUDE_DIRS})
+target_include_directories(numerical_integral
+        PRIVATE ${GTK3_INCLUDE_DIRS}
+        src/ui
+        src/parser
+        src/integrator
+        src/program
+        src/memcheck
+)
+
 target_link_libraries(numerical_integral PRIVATE ${GTK3_LIBRARIES})
