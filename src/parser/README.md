@@ -27,6 +27,7 @@ given variable value.
 ## Supported Features
 
 ### Arithmetic Operations
+
 - Addition (`+`)
 - Subtraction (`-`)
 - Multiplication (`*`)
@@ -34,6 +35,7 @@ given variable value.
 - Exponentiation (`^`)
 
 ### Mathematical Functions
+
 - `sin` - Sine (radians)
 - `cos` - Cosine (radians)
 - `tg` - Tangent (radians)
@@ -42,6 +44,7 @@ given variable value.
 - `exp` - Exponential function (e^x)
 
 ### Data Types
+
 - Variables (single character, typically 'x')
 - Real numbers (floating-point values)
 - Functions with single argument
@@ -105,6 +108,7 @@ typedef union NodeData {
 ### 5. Parser Stack
 
 A stack data structure (`NodeStack`) is used during parsing:
+
 - Fixed size: `STACK_SIZE = 50`
 - Stores `Node*` pointers during AST construction
 - Implements stack overflow/underflow protection
@@ -114,6 +118,7 @@ A stack data structure (`NodeStack`) is used during parsing:
 The parsing process follows these steps:
 
 ### 1. Tokenization
+
 - Input string is split into tokens using `strtok()` with space delimiter
 - Each token is processed sequentially in RPN order
 
@@ -141,12 +146,15 @@ For each token:
 ```
 
 ### 3. AST Construction
+
 - After processing all tokens, stack contains single node
 - This node is the root of the completed AST
 - Stack underflow/overflow conditions trigger program termination
 
 ### 4. Function Resolution
+
 Functions are resolved using a lookup table:
+
 ```c
 const FunctionEntry FUNCTIONS[] = {
     {"sin", sin}, {"cos", cos}, {"tg", tan}, {"ctg", cot},
@@ -175,6 +183,7 @@ evaluate(node, x):
 ```
 
 ### Operator Evaluation
+
 - `+`: Addition of left and right operands
 - `-`: Subtraction (left - right)
 - `*`: Multiplication of operands
@@ -182,7 +191,9 @@ evaluate(node, x):
 - `^`: Exponentiation using `pow(left, right)`
 
 ### Function Evaluation
+
 Functions are evaluated by:
+
 1. Recursively evaluating the argument (left child)
 2. Applying the function to the result
 3. Returning the computed value
@@ -192,15 +203,18 @@ Functions are evaluated by:
 The parser implements comprehensive memory management:
 
 ### 1. Allocation
+
 - All nodes use `NEW_NODE(TYPE)` macro
 - Memory allocation failures trigger program termination
 - Each allocation is checked before use
 
 ### 2. Initialization
+
 - `initialize_node()` sets type and nullifies children
 - Prevents uninitialized pointer access
 
 ### 3. Deallocation
+
 ```c
 void free_tree(Node *node) {
     // Post-order traversal ensures children freed first
@@ -215,13 +229,17 @@ void free_tree(Node *node) {
 ### Core Functions
 
 #### `Node *parse(char *expression)`
+
 Parses RPN expression string into AST.
+
 - **Input**: Space-separated RPN expression
 - **Output**: Root node of AST
 - **Side effects**: Modifies input string (uses `strtok`)
 
 #### `double evaluate(Node *head, double x)`
+
 Evaluates AST for given variable value.
+
 - **Input**: AST root node, variable value
 - **Output**: Computed result
 - **Complexity**: O(n) where n is number of nodes
@@ -229,29 +247,37 @@ Evaluates AST for given variable value.
 ### Node Creation Functions
 
 #### `Node *create_variable(char name)`
+
 Creates variable node with specified name.
 
 #### `Node *create_number(double value)`
+
 Creates number node with specified value.
 
 #### `Node *create_function(const char *name, Func func)`
+
 Creates function node with name and function pointer.
 
 #### `Node *create_operator(char symbol)`
+
 Creates operator node with specified symbol.
 
 ### Utility Functions
 
 #### `void push(NodeStack *stack, Node *node)`
+
 Pushes node onto parsing stack with overflow protection.
 
 #### `Node *pop(NodeStack *stack)`
+
 Pops node from parsing stack with underflow protection.
 
 #### `Func find_function(const char *name)`
+
 Looks up function by name in function table.
 
 #### `double cot(double x)`
+
 Implements cotangent function (1/tan(x)).
 
 ## Error Handling
@@ -259,22 +285,26 @@ Implements cotangent function (1/tan(x)).
 The parser implements robust error handling:
 
 ### 1. Parse-time Errors
+
 - **Invalid tokens**: Unrecognized symbols trigger program termination
 - **Stack overflow**: Too many operands for available stack space
 - **Stack underflow**: Insufficient operands for operators/functions
 - **Memory allocation failures**: All allocation failures are fatal
 
 ### 2. Runtime Errors
+
 - **Unknown operators**: Unsupported operator symbols
 - **Unknown node types**: Corrupted or invalid AST nodes
 - **Mathematical errors**: Division by zero, domain errors (handled by math library)
 
 ### 3. Error Reporting
+
 All errors use `fprintf(stderr, ...)` and call `exit(1)` for immediate termination.
 
 ## Usage Examples
 
 ### Basic Arithmetic
+
 ```c
 char expr1[] = "2 3 +";           // 2 + 3
 Node *ast1 = parse(expr1);
@@ -283,6 +313,7 @@ free_tree(ast1);
 ```
 
 ### Variable Expression
+
 ```c
 char expr2[] = "x 2 *";           // x * 2
 Node *ast2 = parse(expr2);
@@ -291,6 +322,7 @@ free_tree(ast2);
 ```
 
 ### Function Usage
+
 ```c
 char expr3[] = "x sin";           // sin(x)
 Node *ast3 = parse(expr3);
@@ -299,6 +331,7 @@ free_tree(ast3);
 ```
 
 ### Complex Expression
+
 ```c
 char expr4[] = "2 x * 1 +";       // 2 * x + 1
 Node *ast4 = parse(expr4);
@@ -307,6 +340,7 @@ free_tree(ast4);
 ```
 
 ### Integration Context
+
 ```c
 // For numerical integration of sin(x) from 0 to π
 char integrand[] = "x sin";
@@ -322,6 +356,7 @@ free_tree(expression);
 ```
 
 **Important Notes**:
+
 - Input strings are modified by `strtok()` during parsing
 - Always call `free_tree()` to prevent memory leaks
 - Functions expect arguments in radians

@@ -13,11 +13,8 @@
 
 
 #include <gtk/gtk.h>
-#include <string.h>
 #include <stdio.h>
-
-
-#define INITIAL_SIZE 256
+#include <string.h>
 
 
 /**
@@ -25,12 +22,13 @@
  *
  * A structure that represents the main grid layout components of the GUI. It
  * contains grid widgets used to organize various elements like function input,
- * buttons, and interval-related inputs in the application's graphical user interface.
+ * buttons, and interval-related inputs in the application's graphical user
+ * interface.
  */
 typedef struct Grids {
-    GtkWidget *func;
-    GtkWidget *buttons;
-    GtkWidget *interval;
+    GtkWidget* func;
+    GtkWidget* buttons;
+    GtkWidget* interval;
 } Grids;
 
 
@@ -42,9 +40,9 @@ typedef struct Grids {
  * or managing operations.
  */
 typedef struct Buttons {
-    GtkWidget *okFunc;
-    GtkWidget **matrix;
-    GtkWidget *okInterval;
+    GtkWidget* okFunc;
+    GtkWidget** matrix;
+    GtkWidget* okInterval;
 } Buttons;
 
 
@@ -57,9 +55,9 @@ typedef struct Buttons {
  * interval (start and end points).
  */
 typedef struct Entry {
-    GtkWidget *func;
-    GtkWidget *start;
-    GtkWidget *end;
+    GtkWidget* func;
+    GtkWidget* start;
+    GtkWidget* end;
 } Entry;
 
 
@@ -71,26 +69,25 @@ typedef struct Entry {
  * start and end interval inputs.
  */
 typedef struct Labels {
-    GtkWidget *title;
-    GtkWidget *start;
-    GtkWidget *end;
+    GtkWidget* title;
+    GtkWidget* start;
+    GtkWidget* end;
 } Labels;
 
 
-
-void apply_styling(const char *css_file_path);
+void apply_styling(const char* css_file_path);
 
 void run_gui(int* argc, char*** argv);
 
-void insert_text(GtkWidget *button, gpointer user_data);
+void insert_text(GtkWidget* button, gpointer user_data);
 
-void save_to_file(GtkWidget *button, gpointer user_data);
+void save_to_file(GtkWidget* button, gpointer user_data);
 
-void save_interval(GtkWidget *button, gpointer user_data);
+void save_interval(GtkWidget* button, gpointer user_data);
 
-void disable_button(GtkWidget *button, gpointer user_data);
+void disable_button(GtkWidget* button, gpointer user_data);
 
-void over(GtkWidget *button, gpointer user_data);
+void over(GtkWidget* button, gpointer user_data);
 
 
 #endif /* GUI_H */

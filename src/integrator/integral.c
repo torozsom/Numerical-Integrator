@@ -1,10 +1,12 @@
 /**
  * @file integral.c
- * @brief Functions for calculating Riemann sums and Darboux sums for numerical integration.
+ * @brief Functions for calculating Riemann sums and Darboux sums for numerical
+ * integration.
  *
- * This file contains functions to compute the Riemann sum, lower Darboux sum, and upper Darboux sum
- * of a mathematical expression over a specified interval. It also includes functions to find the
- * infimum and supremum of the expression within that interval.
+ * This file contains functions to compute the Riemann sum, lower Darboux sum,
+ * and upper Darboux sum of a mathematical expression over a specified interval.
+ * It also includes functions to find the infimum and supremum of the expression
+ * within that interval.
  */
 
 
@@ -13,20 +15,26 @@
 
 
 /**
- * Calculates the Riemann sum of a mathematical expression over a specified interval.
+ * Calculates the Riemann sum of a mathematical expression over a specified
+ * interval.
  *
- * This function computes the Riemann sum by evaluating the expression at discrete points
- * within the interval defined by `start` and `end`, with a step size of `dx`.
+ * This function computes the Riemann sum by evaluating the expression at
+ * discrete points within the interval defined by `start` and `end`, with a step
+ * size of `dx`.
  *
- * @param expression A pointer to the `Node` representing the mathematical expression to evaluate.
- *                   The expression must be parsed and valid before being passed to this function.
- * @param start The starting point of the interval over which the Riemann sum is to be calculated.
- * @param end The ending point of the interval over which the Riemann sum is to be calculated.
- *            It is assumed that `end` is greater than or equal to `start`.
+ * @param expression A pointer to the `Node` representing the mathematical
+ * expression to evaluate. The expression must be parsed and valid before being
+ * passed to this function.
+ * @param start The starting point of the interval over which the Riemann sum is
+ * to be calculated.
+ * @param end The ending point of the interval over which the Riemann sum is to
+ * be calculated. It is assumed that `end` is greater than or equal to `start`.
  * @param dx The width of each subinterval for the Riemann sum calculation.
- * @return The computed Riemann sum for the given expression over the specified interval.
+ * @return The computed Riemann sum for the given expression over the specified
+ * interval.
  */
-double calculate_Riemann_sum(Node *expression, const double start, const double end, const double dx) {
+double calculate_Riemann_sum(Node* expression, const double start,
+                             const double end, const double dx) {
     double Riemann_sum = 0;
     double x = start;
 
@@ -40,20 +48,24 @@ double calculate_Riemann_sum(Node *expression, const double start, const double 
 
 
 /**
- * Finds the infimum (minimum value) of a mathematical expression within a specified interval.
+ * Finds the infimum (minimum value) of a mathematical expression within a
+ * specified interval.
  *
- * @param expr A pointer to the `Node` representing the mathematical expression to evaluate.
- *             The expression must be parsed and valid before being passed to this function.
- * @param start The starting point of the interval over which the infimum is to be found.
- * @param end The ending point of the interval over which the infimum is to be found.
- *            It is assumed that `end` is greater than or equal to `start`.
- * @param step The step size for incrementing through the interval. Smaller step sizes
- *             provide higher accuracy at the cost of additional computation.
- * @return The infimum value of the expression within the interval `[start, end]`. If the
- *         interval is not valid or the expression cannot be evaluated, the function
- *         exits the program with an error message.
+ * @param expr A pointer to the `Node` representing the mathematical expression
+ * to evaluate. The expression must be parsed and valid before being passed to
+ * this function.
+ * @param start The starting point of the interval over which the infimum is to
+ * be found.
+ * @param end The ending point of the interval over which the infimum is to be
+ * found. It is assumed that `end` is greater than or equal to `start`.
+ * @param step The step size for incrementing through the interval. Smaller step
+ * sizes provide higher accuracy at the cost of additional computation.
+ * @return The infimum value of the expression within the interval `[start,
+ * end]`. If the interval is not valid or the expression cannot be evaluated,
+ * the function exits the program with an error message.
  */
-double find_infimum(Node *expr, const double start, const double end, const double step) {
+double find_infimum(Node* expr, const double start, const double end,
+                    const double step) {
     if (expr == NULL) {
         printf("Error parsing expression.\n");
         exit(1);
@@ -74,21 +86,30 @@ double find_infimum(Node *expr, const double start, const double end, const doub
 
 
 /**
- * Calculates the lower Darboux sum of a mathematical expression over a specified interval.
+ * Calculates the lower Darboux sum of a mathematical expression over a
+ * specified interval.
  *
- * This function computes the lower Darboux sum by evaluating the infimum of the expression
- * at discrete points within the interval defined by `start` and `end`, with a subinterval width of `dx`.
+ * This function computes the lower Darboux sum by evaluating the infimum of the
+ * expression at discrete points within the interval defined by `start` and
+ * `end`, with a subinterval width of `dx`.
  *
- * @param expression A pointer to the `Node` representing the mathematical expression to evaluate.
- *                   The expression must be parsed and valid before being passed to this function.
- * @param start The starting point of the interval over which the lower Darboux sum is to be calculated.
- * @param end The ending point of the interval over which the lower Darboux sum is to be calculated.
- *            It is assumed that `end` is greater than or equal to `start`.
- * @param dx The width of each subinterval for the lower Darboux sum calculation.
- * @param step The step size for evaluating the infimum. Smaller step sizes provide higher accuracy.
- * @return The computed lower Darboux sum for the given expression over the specified interval.
+ * @param expression A pointer to the `Node` representing the mathematical
+ * expression to evaluate. The expression must be parsed and valid before being
+ * passed to this function.
+ * @param start The starting point of the interval over which the lower Darboux
+ * sum is to be calculated.
+ * @param end The ending point of the interval over which the lower Darboux sum
+ * is to be calculated. It is assumed that `end` is greater than or equal to
+ * `start`.
+ * @param dx The width of each subinterval for the lower Darboux sum
+ * calculation.
+ * @param step The step size for evaluating the infimum. Smaller step sizes
+ * provide higher accuracy.
+ * @return The computed lower Darboux sum for the given expression over the
+ * specified interval.
  */
-double calculate_lower_Darboux_sum(Node *expression, const double start, const double end, const double dx,
+double calculate_lower_Darboux_sum(Node* expression, const double start,
+                                   const double end, const double dx,
                                    const double step) {
     double lower_Darboux_sum = 0;
     double x = start;
@@ -103,20 +124,24 @@ double calculate_lower_Darboux_sum(Node *expression, const double start, const d
 
 
 /**
- * Finds the supremum (maximum value) of a mathematical expression within a specified interval.
+ * Finds the supremum (maximum value) of a mathematical expression within a
+ * specified interval.
  *
- * @param expr A pointer to the `Node` representing the mathematical expression to evaluate.
- *             The expression must be parsed and valid before being passed to this function.
- * @param start The starting point of the interval over which the supremum is to be found.
- * @param end The ending point of the interval over which the supremum is to be found.
- *            It is assumed that `end` is greater than or equal to `start`.
- * @param step The step size for incrementing through the interval. Smaller step sizes
- *             provide higher accuracy at the cost of additional computation.
- * @return The supremum value of the expression within the interval `[start, end]`. If the
- *         interval is not valid or the expression cannot be evaluated, the function
- *         exits the program with an error message.
+ * @param expr A pointer to the `Node` representing the mathematical expression
+ * to evaluate. The expression must be parsed and valid before being passed to
+ * this function.
+ * @param start The starting point of the interval over which the supremum is to
+ * be found.
+ * @param end The ending point of the interval over which the supremum is to be
+ * found. It is assumed that `end` is greater than or equal to `start`.
+ * @param step The step size for incrementing through the interval. Smaller step
+ * sizes provide higher accuracy at the cost of additional computation.
+ * @return The supremum value of the expression within the interval `[start,
+ * end]`. If the interval is not valid or the expression cannot be evaluated,
+ * the function exits the program with an error message.
  */
-double find_supremum(Node *expr, const double start, const double end, const double step) {
+double find_supremum(Node* expr, const double start, const double end,
+                     const double step) {
     if (expr == NULL) {
         printf("Error parsing expression.\n");
         exit(1);
@@ -137,21 +162,30 @@ double find_supremum(Node *expr, const double start, const double end, const dou
 
 
 /**
- * Calculates the upper Darboux sum of a mathematical expression over a specified interval.
+ * Calculates the upper Darboux sum of a mathematical expression over a
+ * specified interval.
  *
- * This function computes the upper Darboux sum by evaluating the supremum of the expression
- * at discrete points within the interval defined by `start` and `end`, with a subinterval width of `dx`.
+ * This function computes the upper Darboux sum by evaluating the supremum of
+ * the expression at discrete points within the interval defined by `start` and
+ * `end`, with a subinterval width of `dx`.
  *
- * @param expression A pointer to the `Node` representing the mathematical expression to evaluate.
- *                   The expression must be parsed and valid before being passed to this function.
- * @param start The starting point of the interval over which the upper Darboux sum is to be calculated.
- * @param end The ending point of the interval over which the upper Darboux sum is to be calculated.
- *            It is assumed that `end` is greater than or equal to `start`.
- * @param dx The width of each subinterval for the upper Darboux sum calculation.
- * @param step The step size for evaluating the supremum. Smaller step sizes provide higher accuracy.
- * @return The computed upper Darboux sum for the given expression over the specified interval.
+ * @param expression A pointer to the `Node` representing the mathematical
+ * expression to evaluate. The expression must be parsed and valid before being
+ * passed to this function.
+ * @param start The starting point of the interval over which the upper Darboux
+ * sum is to be calculated.
+ * @param end The ending point of the interval over which the upper Darboux sum
+ * is to be calculated. It is assumed that `end` is greater than or equal to
+ * `start`.
+ * @param dx The width of each subinterval for the upper Darboux sum
+ * calculation.
+ * @param step The step size for evaluating the supremum. Smaller step sizes
+ * provide higher accuracy.
+ * @return The computed upper Darboux sum for the given expression over the
+ * specified interval.
  */
-double calculate_upper_Darboux_sum(Node *expression, const double start, const double end, const double dx,
+double calculate_upper_Darboux_sum(Node* expression, const double start,
+                                   const double end, const double dx,
                                    const double step) {
     double upper_Darboux_sum = 0;
     double x = start;
@@ -185,7 +219,7 @@ double calculate_upper_Darboux_sum(Node *expression, const double start, const d
  * @param interval A string representing the interval over which the integral
  *                 is to be computed, formatted as "[start ; end]".
  */
-void integrate(char *integrand, char *interval) {
+void integrate(char* integrand, char* interval) {
     remove_spaces(integrand);
 
     if (!validate_integrand(integrand)) {
@@ -207,7 +241,7 @@ void integrate(char *integrand, char *interval) {
         return;
     }
 
-    Node *expression = parse(integrand);
+    Node* expression = parse(integrand);
     if (!expression) {
         perror("Error parsing expression.\n");
         free_resources(integrand, interval, nullptr);
@@ -228,24 +262,31 @@ void integrate(char *integrand, char *interval) {
     struct timespec start_time, end_time;
 
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start_time);
-    const double Riemann_sum = calculate_Riemann_sum(expression, start, end, dx);
+    const double Riemann_sum =
+        calculate_Riemann_sum(expression, start, end, dx);
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end_time);
     const double time_of_Riemann = timespec_diff_ms(&start_time, &end_time);
 
     constexpr double step = 1E-05; // The step size for evaluating the extremum
 
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start_time);
-    const double lower_Darboux_sum = calculate_lower_Darboux_sum(expression, start, end, dx, step);
+    const double lower_Darboux_sum =
+        calculate_lower_Darboux_sum(expression, start, end, dx, step);
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end_time);
-    const double time_of_lower_Darboux = timespec_diff_ms(&start_time, &end_time);
+    const double time_of_lower_Darboux =
+        timespec_diff_ms(&start_time, &end_time);
 
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start_time);
-    const double upper_Darboux_sum = calculate_upper_Darboux_sum(expression, start, end, dx, step);
+    const double upper_Darboux_sum =
+        calculate_upper_Darboux_sum(expression, start, end, dx, step);
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end_time);
-    const double time_of_upper_Darboux = timespec_diff_ms(&start_time, &end_time);
+    const double time_of_upper_Darboux =
+        timespec_diff_ms(&start_time, &end_time);
 
-    double time_spent[3] = {time_of_Riemann, time_of_lower_Darboux, time_of_upper_Darboux};
+    double time_spent[3] = {time_of_Riemann, time_of_lower_Darboux,
+                            time_of_upper_Darboux};
 
-    log_integral_values(minus, Riemann_sum, lower_Darboux_sum, upper_Darboux_sum, time_spent);
+    log_integral_values(minus, Riemann_sum, lower_Darboux_sum,
+                        upper_Darboux_sum, time_spent);
     free_resources(integrand, interval, expression);
 }

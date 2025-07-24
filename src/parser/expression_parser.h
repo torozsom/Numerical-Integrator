@@ -15,17 +15,18 @@
 #ifndef EXPRESSION_PARSER_H
 #define EXPRESSION_PARSER_H
 
+
+#include <ctype.h>
+#include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include <ctype.h>
-#include <stdio.h>
 
 
 #define STACK_SIZE 50
 #define FUNCTION_NAME_MAX 10
 #define OPERATORS "+-*/^" // Supported operators
-#define NEW_NODE(TYPE) ((Node *)malloc(sizeof(Node)))
+#define NEW_NODE(TYPE) ((Node*)malloc(sizeof(Node)))
 
 
 /**
@@ -94,7 +95,8 @@ typedef struct Operator {
  * @brief Types of nodes in the expression tree.
  *
  * This enumeration defines the different types of nodes that can exist
- * in the expression tree, including variables, numbers, functions, and operators.
+ * in the expression tree, including variables, numbers, functions, and
+ * operators.
  */
 typedef enum NodeType {
     NODE_VARIABLE,
@@ -108,9 +110,9 @@ typedef enum NodeType {
  * @union NodeData
  * @brief Union to hold different types of node data.
  *
- * The NodeData union is used to store the data for a node in the expression tree.
- * It can hold either a Variable, Number, Function, or Operator, depending on the
- * type of node.
+ * The NodeData union is used to store the data for a node in the expression
+ * tree. It can hold either a Variable, Number, Function, or Operator, depending
+ * on the type of node.
  */
 typedef union NodeData {
     Variable variable;
@@ -144,7 +146,7 @@ typedef struct Node {
  * evaluating them in a last-in-first-out (LIFO) manner.
  */
 typedef struct NodeStack {
-    Node *data[STACK_SIZE];
+    Node* data[STACK_SIZE];
     int top;
 } NodeStack;
 
@@ -159,31 +161,30 @@ typedef struct NodeStack {
  * function implementation.
  */
 typedef struct FunctionEntry {
-    const char *name;
+    const char* name;
     double (*operation)(double);
 } FunctionEntry;
 
 
-
 double cot(double x);
 
-void push(NodeStack *stack, Node *node);
+void push(NodeStack* stack, Node* node);
 
-Node *pop(NodeStack *stack);
+Node* pop(NodeStack* stack);
 
-Node *create_variable(char name);
+Node* create_variable(char name);
 
-Node *create_number(double value);
+Node* create_number(double value);
 
-Node *create_function(const char *name, Func func);
+Node* create_function(const char* name, Func func);
 
-Node *create_operator(char symbol);
+Node* create_operator(char symbol);
 
-Node *parse(char *expression);
+Node* parse(char* expression);
 
-double evaluate(Node *head, double x);
+double evaluate(Node* head, double x);
 
-void free_tree(Node *node);
+void free_tree(Node* node);
 
 
 #endif /* EXPRESSION_PARSER_H */

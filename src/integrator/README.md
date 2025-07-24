@@ -40,7 +40,7 @@ assessment.
 
 $$\int_a^b f(x)dx \approx \sum_{i=1}^{n} f(x_i)\Delta x$$
 
-The Riemann sum approximates the integral by sampling the function at any given 
+The Riemann sum approximates the integral by sampling the function at any given
 point within the subinterval, so we use the left endpoint of each one.
 
 ### Darboux Sums
@@ -50,7 +50,6 @@ $$\text{Lower Sum: } L(f,P) = \sum_{i=1}^{n} m_i \cdot \Delta x$$
 $$\text{Upper Sum: } U(f,P) = \sum_{i=1}^{n} M_i \cdot \Delta x$$
 
 Where:
-
 
 - `mi` is the infimum (minimum) of f(x) on subinterval i
 - `Mi` is the supremum (maximum) of f(x) on subinterval i
@@ -69,18 +68,18 @@ Input → Validation → Parsing → Computation → Result Analysis → Resourc
 ### 2. Key Steps
 
 1. **Input Processing**
-   - Remove spaces from integrand expression
-   - Validate integrand expression syntax and length
-   - Parse integration interval in `[start ; end]` format
-   - Get user-specified refinement level
+    - Remove spaces from integrand expression
+    - Validate integrand expression syntax and length
+    - Parse integration interval in `[start ; end]` format
+    - Get user-specified refinement level
 
 2. **Expression Parsing**
-   - Parse mathematical expression into AST (Abstract Syntax Tree)
-   - Validate expression structure
+    - Parse mathematical expression into AST (Abstract Syntax Tree)
+    - Validate expression structure
 
 3. **Interval Handling**
-   - Handle reverse intervals (start > end) by swapping and negating result
-   - Calculate subinterval width: `dx = (end - start) / refinement`
+    - Handle reverse intervals (start > end) by swapping and negating result
+    - Calculate subinterval width: `dx = (end - start) / refinement`
 
 4. **Computation**
    ```
@@ -96,9 +95,9 @@ Input → Validation → Parsing → Computation → Result Analysis → Resourc
    ```
 
 5. **Result Analysis**
-   - Log integral values with proper sign handling
-   - Present comprehensive results including error bounds
-   - Calculate average approximation from Darboux bounds
+    - Log integral values with proper sign handling
+    - Present comprehensive results including error bounds
+    - Calculate average approximation from Darboux bounds
 
 ## Input Validation
 
@@ -132,15 +131,15 @@ Interactive user input validation for refinement level selection.
 The module implements comprehensive error handling:
 
 1. **Input Errors**
-   - Invalid expression syntax (exits gracefully)
-   - Malformed intervals
-   - Out-of-range refinement values
-   - Null expression pointers
+    - Invalid expression syntax (exits gracefully)
+    - Malformed intervals
+    - Out-of-range refinement values
+    - Null expression pointers
 
 2. **Computation Errors**
-   - Memory allocation failures
-   - Expression parsing errors (`perror` messages)
-   - Null expression tree handling
+    - Memory allocation failures
+    - Expression parsing errors (`perror` messages)
+    - Null expression tree handling
 
 3. **Resource Management**
    ```c
@@ -197,25 +196,31 @@ The module depends on several other components:
 ### Core Integration Functions
 
 #### `calculate_Riemann_sum(Node* expression, double start, double end, double dx)`
+
 Computes Riemann sum using left endpoint evaluation.
 
 #### `calculate_lower_Darboux_sum(Node* expression, double start, double end, double dx, double step)`
+
 Computes lower Darboux sum by finding infimum in each subinterval.
 
 #### `calculate_upper_Darboux_sum(Node* expression, double start, double end, double dx, double step)`
+
 Computes upper Darboux sum by finding supremum in each subinterval.
 
 ### Utility Functions
 
 #### `find_infimum(Node* expr, double start, double end, double step)`
+
 Finds minimum value of expression in given interval.
 
 #### `find_supremum(Node* expr, double start, double end, double step)`
+
 Finds maximum value of expression in given interval.
 
 ### Main Interface
 
 #### `integrate(char* integrand, char* interval)`
+
 Main integration function that orchestrates the entire process from input validation to result output.
 
 ## Usage Example
@@ -236,4 +241,5 @@ integrate(integrand, interval);
 // - Average approximation and error estimate
 ```
 
-The output provides comprehensive information about the integral approximation, including multiple methods and rigorous error bounds through Darboux sum analysis.
+The output provides comprehensive information about the integral approximation, including multiple methods and rigorous
+error bounds through Darboux sum analysis.
