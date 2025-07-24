@@ -13,85 +13,6 @@
 
 
 /**
- * Reads the last two lines of a file and stores them in the provided pointers.
- * Memory for the lines is dynamically allocated and must be freed by the caller.
- *
- * @param filename Name of the file to read from.
- * @param last Pointer to a char pointer where the last line of the file will be stored.
- * @param second_last Pointer to a char pointer where the second-to-last line of the file will be stored.
- */
-void read_file(const char *filename, char **last, char **second_last) {
-    FILE *file = fopen(filename, "r");
-
-    if (file == NULL) {
-        perror("Error opening file");
-        return;
-    }
-
-    char *last_line = nullptr;
-    char *second_last_line = nullptr;
-    int size = INITIAL_SIZE;
-
-    last_line = (char *) malloc(size * sizeof(char)+1);
-    second_last_line = (char *) malloc(size * sizeof(char)+1);
-
-    if (last_line == NULL || second_last_line == NULL) {
-        perror("Did not manage to allocate memory");
-        return;
-    }
-
-    last_line[0] = '\0';
-    second_last_line[0] = '\0';
-
-    while (fgets(last_line, size, file) != NULL) {
-        if (last_line[strlen(last_line) - 1] == '\n') {
-            char *temp = last_line;
-            last_line = second_last_line;
-            second_last_line = temp;
-        } else {
-            size *= 2;
-            last_line = (char *) realloc(last_line, size * sizeof(char));
-            second_last_line = (char *) realloc(second_last_line, size * sizeof(char));
-
-            if (last_line == NULL || second_last_line == NULL) {
-                perror("Did not manage to allocate memory");
-                return;
-            }
-        }
-    }
-
-    *last = last_line;
-    *second_last = second_last_line;
-
-    fclose(file);
-}
-
-
-/**
- * @brief Removes leading and trailing spaces from a given string and compresses the string.
- *        The trimmed string is stored in the same memory location as the input string.
- *
- * @param str The input string from which spaces are to be removed.
- *            After execution, the string will no longer contain leading or trailing spaces.
- */
-void remove_spaces(char *str) {
-    size_t start = 0;
-    size_t end = strlen(str) - 1;
-
-    while (isspace(str[start]))
-        start++;
-
-    while (end > start && isspace(str[end]))
-        end--;
-
-    size_t i, j;
-    for (i = start, j = 0; i <= end; i++, j++)
-        str[j] = str[i];
-    str[j] = '\0';
-}
-
-
-/**
  * @brief Applies modern CSS styling to the GTK application by loading from external CSS file.
  *
  * This function loads custom CSS styles from 'styles.css' file to give the application
@@ -157,7 +78,7 @@ void run_gui(int *argc, char ***argv) {
     gtk_init(argc, argv);
 
     // Apply modern CSS styling from external file
-    apply_styling("styles.css");
+    apply_styling("../src/ui/styles.css");
 
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "✨ Numerical Integration Calculator");

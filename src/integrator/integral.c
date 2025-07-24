@@ -1,10 +1,10 @@
 /**
  * @file integral.c
- * @brief Implementation of numerical integration functions.
+ * @brief Functions for calculating Riemann sums and Darboux sums for numerical integration.
  *
- * This file contains functions to perform numerical integration of mathematical expressions
- * over specified intervals. It includes validation of input, parsing of expressions, and
- * computation of integrals using the supremum method.
+ * This file contains functions to compute the Riemann sum, lower Darboux sum, and upper Darboux sum
+ * of a mathematical expression over a specified interval. It also includes functions to find the
+ * infimum and supremum of the expression within that interval.
  */
 
 
@@ -13,88 +13,155 @@
 
 
 /**
- * Frees allocated memory for the given resources.
+ * Calculates the Riemann sum of a mathematical expression over a specified interval.
  *
- * @param integrand Pointer to the integrand string to be freed. Can be NULL.
- * @param interval Pointer to the interval string to be freed. Can be NULL.
- * @param expression Pointer to the root node of the parsed expression tree to be freed. Can be NULL.
+ * This function computes the Riemann sum by evaluating the expression at discrete points
+ * within the interval defined by `start` and `end`, with a step size of `dx`.
+ *
+ * @param expression A pointer to the `Node` representing the mathematical expression to evaluate.
+ *                   The expression must be parsed and valid before being passed to this function.
+ * @param start The starting point of the interval over which the Riemann sum is to be calculated.
+ * @param end The ending point of the interval over which the Riemann sum is to be calculated.
+ *            It is assumed that `end` is greater than or equal to `start`.
+ * @param dx The width of each subinterval for the Riemann sum calculation.
+ * @return The computed Riemann sum for the given expression over the specified interval.
  */
-void free_resources(char *integrand, char *interval, Node *expression) {
-    if (integrand)
-        free(integrand);
-    if (interval)
-        free(interval);
-    if (expression)
-        free_tree(expression);
+double calculate_Riemann_sum(Node *expression, const double start, const double end, const double dx) {
+    double Riemann_sum = 0;
+    double x = start;
+
+    while (x <= end) {
+        Riemann_sum += evaluate(expression, x) * dx;
+        x += dx;
+    }
+
+    return Riemann_sum;
 }
 
 
 /**
- * Validates the given integrand to ensure it meets the maximum allowed length constraint.
+ * Finds the infimum (minimum value) of a mathematical expression within a specified interval.
  *
- * @param integrand A constant character pointer representing the mathematical integrand to be validated.
- * @return true if the integrand length is within the allowed limit defined by MAX_INTEGRAND_LENGTH,
- *         false otherwise.
+ * @param expr A pointer to the `Node` representing the mathematical expression to evaluate.
+ *             The expression must be parsed and valid before being passed to this function.
+ * @param start The starting point of the interval over which the infimum is to be found.
+ * @param end The ending point of the interval over which the infimum is to be found.
+ *            It is assumed that `end` is greater than or equal to `start`.
+ * @param step The step size for incrementing through the interval. Smaller step sizes
+ *             provide higher accuracy at the cost of additional computation.
+ * @return The infimum value of the expression within the interval `[start, end]`. If the
+ *         interval is not valid or the expression cannot be evaluated, the function
+ *         exits the program with an error message.
  */
-bool validate_integrand(const char *integrand) {
-    if (strlen(integrand) > MAX_INTEGRAND_LENGTH) {
-        printf("The integrand is too long.\n");
-        return false;
+double find_infimum(Node *expr, const double start, const double end, const double step) {
+    if (expr == NULL) {
+        printf("Error parsing expression.\n");
+        exit(1);
     }
-    return true;
+
+    double x = start;
+    double infimum = evaluate(expr, x);
+
+    while (x <= end) {
+        double value = evaluate(expr, x);
+        if (value < infimum)
+            infimum = value;
+        x += step;
+    }
+
+    return infimum;
 }
 
 
 /**
- * Validates a given interval string and extracts the start and end points.
+ * Calculates the lower Darboux sum of a mathematical expression over a specified interval.
  *
- * This function checks whether the interval string is properly defined and parses
- * the interval into numerical start and end points. If the start and end points
- * are equal, it considers the interval invalid for integration.
+ * This function computes the lower Darboux sum by evaluating the infimum of the expression
+ * at discrete points within the interval defined by `start` and `end`, with a subinterval width of `dx`.
  *
- * @param interval The interval string in the format "[start ; end]". It should contain
- *                 numerical values for start and end separated by a semicolon.
- * @param start Pointer to a double where the parsed start value will be stored.
- * @param end Pointer to a double where the parsed end value will be stored.
- * @return Returns true if the interval is valid; otherwise, returns false.
+ * @param expression A pointer to the `Node` representing the mathematical expression to evaluate.
+ *                   The expression must be parsed and valid before being passed to this function.
+ * @param start The starting point of the interval over which the lower Darboux sum is to be calculated.
+ * @param end The ending point of the interval over which the lower Darboux sum is to be calculated.
+ *            It is assumed that `end` is greater than or equal to `start`.
+ * @param dx The width of each subinterval for the lower Darboux sum calculation.
+ * @param step The step size for evaluating the infimum. Smaller step sizes provide higher accuracy.
+ * @return The computed lower Darboux sum for the given expression over the specified interval.
  */
-bool validate_interval(const char *interval, double *start, double *end) {
-    if (strcmp(interval, "[ ; ]") == 0) {
-        printf("The interval is not defined.\n");
-        return false;
+double calculate_lower_Darboux_sum(Node *expression, const double start, const double end, const double dx,
+                                   const double step) {
+    double lower_Darboux_sum = 0;
+    double x = start;
+
+    while (x <= end) {
+        lower_Darboux_sum += find_infimum(expression, x, x + dx, step) * dx;
+        x += dx;
     }
 
-    sscanf(interval, "[%lf ; %lf]", start, end);
-
-    if (*start == *end) {
-        printf("Integrating in a [c; c] interval is defined to be equal to 0.\n");
-        return false;
-    }
-
-    return true;
+    return lower_Darboux_sum;
 }
 
 
 /**
- * @brief Prompts the user to enter the number of iterations for a calculation and validates the input.
+ * Finds the supremum (maximum value) of a mathematical expression within a specified interval.
  *
- * This function asks the user for an integer value representing the number of iterations, ensuring it falls
- * within the defined range [MIN_ITERATIONS, MAX_ITERATIONS]. If the input is out of range, an error message
- * is displayed, and the function returns -1. Otherwise, the valid number of iterations is returned.
- *
- * @return The number of iterations entered by the user, or -1 if the input is invalid.
+ * @param expr A pointer to the `Node` representing the mathematical expression to evaluate.
+ *             The expression must be parsed and valid before being passed to this function.
+ * @param start The starting point of the interval over which the supremum is to be found.
+ * @param end The ending point of the interval over which the supremum is to be found.
+ *            It is assumed that `end` is greater than or equal to `start`.
+ * @param step The step size for incrementing through the interval. Smaller step sizes
+ *             provide higher accuracy at the cost of additional computation.
+ * @return The supremum value of the expression within the interval `[start, end]`. If the
+ *         interval is not valid or the expression cannot be evaluated, the function
+ *         exits the program with an error message.
  */
-int get_iteration_count() {
-    int iterations;
-    printf("Enter the number of iterations (x in [%d ; %d]): ", MIN_ITERATIONS, MAX_ITERATIONS);
-    scanf("%d", &iterations);
-
-    if (iterations < MIN_ITERATIONS || iterations > MAX_ITERATIONS) {
-        printf("Error: The number of iterations must be between %d and %d.\n", MIN_ITERATIONS, MAX_ITERATIONS);
-        return -1;
+double find_supremum(Node *expr, const double start, const double end, const double step) {
+    if (expr == NULL) {
+        printf("Error parsing expression.\n");
+        exit(1);
     }
 
-    return iterations;
+    double x = start;
+    double supremum = evaluate(expr, x);
+
+    while (x <= end) {
+        double value = evaluate(expr, x);
+        if (value > supremum)
+            supremum = value;
+        x += step;
+    }
+
+    return supremum;
+}
+
+
+/**
+ * Calculates the upper Darboux sum of a mathematical expression over a specified interval.
+ *
+ * This function computes the upper Darboux sum by evaluating the supremum of the expression
+ * at discrete points within the interval defined by `start` and `end`, with a subinterval width of `dx`.
+ *
+ * @param expression A pointer to the `Node` representing the mathematical expression to evaluate.
+ *                   The expression must be parsed and valid before being passed to this function.
+ * @param start The starting point of the interval over which the upper Darboux sum is to be calculated.
+ * @param end The ending point of the interval over which the upper Darboux sum is to be calculated.
+ *            It is assumed that `end` is greater than or equal to `start`.
+ * @param dx The width of each subinterval for the upper Darboux sum calculation.
+ * @param step The step size for evaluating the supremum. Smaller step sizes provide higher accuracy.
+ * @return The computed upper Darboux sum for the given expression over the specified interval.
+ */
+double calculate_upper_Darboux_sum(Node *expression, const double start, const double end, const double dx,
+                                   const double step) {
+    double upper_Darboux_sum = 0;
+    double x = start;
+
+    while (x <= end) {
+        upper_Darboux_sum += find_supremum(expression, x, x + dx, step) * dx;
+        x += dx;
+    }
+
+    return upper_Darboux_sum;
 }
 
 
@@ -133,23 +200,12 @@ void integrate(char *integrand, char *interval) {
         return;
     }
 
-    bool minus = false;
-    if (start > end) {
-        const double temp = start;
-        start = end;
-        end = temp;
-        minus = true;
-    }
-
-    const int iterations = get_iteration_count();
-    if (iterations == -1) {
+    // The number of subintervals for the partitioning of the interval
+    const int refinement = get_partition_refinement();
+    if (refinement == -1) {
         free_resources(integrand, interval, nullptr);
         return;
     }
-
-    const double subinterval_size = (end - start) / iterations;
-    constexpr double step = 10e-7;
-    double integral = 0;
 
     Node *expression = parse(integrand);
     if (!expression) {
@@ -158,44 +214,22 @@ void integrate(char *integrand, char *interval) {
         return;
     }
 
-    for (double x = start; x < end; x += subinterval_size)
-        integral += subinterval_size * find_supremum(expression, x, x + subinterval_size, step);
+    bool minus = false;
+    if (start > end) {
+        const double temp = start;
+        start = end;
+        end = temp;
+        minus = true;
+    }
 
+    // Size of each subinterval
+    const double dx = (end - start) / refinement;
+    const double Riemann_sum = calculate_Riemann_sum(expression, start, end, dx);
 
-    printf("Integral = %.4f\n\n", minus ? -integral : integral);
+    constexpr double step = 1E-05; // The step size for evaluating the extremum
+    const double lower_Darboux_sum = calculate_lower_Darboux_sum(expression, start, end, dx, step);
+    const double upper_Darboux_sum = calculate_upper_Darboux_sum(expression, start, end, dx, step);
+
+    log_integral_values(minus, Riemann_sum, lower_Darboux_sum, upper_Darboux_sum);
     free_resources(integrand, interval, expression);
-}
-
-
-/**
- * Finds the supremum (maximum value) of a mathematical expression within a specified interval.
- *
- * @param expr A pointer to the `Node` representing the mathematical expression to evaluate.
- *             The expression must be parsed and valid before being passed to this function.
- * @param start The starting point of the interval over which the supremum is to be found.
- * @param end The ending point of the interval over which the supremum is to be found.
- *            It is assumed that `end` is greater than or equal to `start`.
- * @param step The step size for incrementing through the interval. Smaller step sizes
- *             provide higher accuracy at the cost of additional computation.
- * @return The supremum value of the expression within the interval `[start, end]`. If the
- *         interval is not valid or the expression cannot be evaluated, the function
- *         exits the program with an error message.
- */
-double find_supremum(Node *expr, const double start, const double end, const double step) {
-    if (expr == NULL) {
-        printf("Error parsing expression.\n");
-        exit(1);
-    }
-
-    double x = start;
-    double supremum = evaluate(expr, x);
-
-    while (x <= end) {
-        double value = evaluate(expr, x);
-        if (value > supremum)
-            supremum = value;
-        x += step;
-    }
-
-    return supremum;
 }

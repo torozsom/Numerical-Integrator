@@ -8,6 +8,7 @@
 
 
 #include "expression_parser.h"
+#include "debugmalloc.h"
 
 
 /**
@@ -297,22 +298,5 @@ double evaluate(Node *head, const double x) {
         default:
             fprintf(stderr, "Error: Unknown node type.\n");
             exit(1);
-    }
-}
-
-
-/**
- * Recursively deallocates memory associated with nodes of a binary tree.
- * This function traverses the binary tree in a post-order manner,
- * freeing memory for each left subtree, right subtree, and finally the parent node.
- *
- * @param node Pointer to the root node of the binary tree to be freed.
- */
-void free_tree(Node *node) {
-    if (node) {
-        free_tree(node->left);
-        free_tree(node->right);
-        free(node);
-        node = nullptr;
     }
 }

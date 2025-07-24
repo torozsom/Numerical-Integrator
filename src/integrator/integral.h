@@ -1,14 +1,15 @@
 /**
  * @file integral.h
- * @brief Header file for numerical integration functions.
+ * @brief Header file for integral calculation functions.
  *
- * This file contains function declarations and definitions for performing numerical integration,
- * validating input, and managing resources.
+ * This file contains declarations for functions that compute Riemann sums,
+ * Darboux sums, and perform integration based on user input.
  */
 
 
 #ifndef INTEGRAL_H
 #define INTEGRAL_H
+
 
 #include <string.h>
 #include <math.h>
@@ -19,25 +20,26 @@
 #include <float.h>
 
 #include "expression_parser.h"
-#include "gui.h"
+#include "controls.h"
+
 
 #define INITIAL_SIZE 256
 #define MAX_INTEGRAND_LENGTH 100
-#define MIN_ITERATIONS 1
-#define MAX_ITERATIONS 10000000
+#define MIN_REFINEMENT 1
+#define MAX_REFINEMENT 20000000
 
 
-void free_resources(char *integrand, char *interval, Node *expression);
+double calculate_Riemann_sum(Node* expression, double start, double end, double dx);
 
-bool validate_integrand(const char *integrand);
+double find_infimum(Node* expr, double start, double end, double step);
 
-bool validate_interval(const char *interval, double *start, double *end);
-
-int get_iteration_count();
-
-void integrate(char *integrand, char *interval);
+double calculate_lower_Darboux_sum(Node* expression, double start, double end, double dx, double step);
 
 double find_supremum(Node* expr, double start, double end, double step);
+
+double calculate_upper_Darboux_sum(Node* expression, double start, double end, double dx, double step);
+
+void integrate(char *integrand, char *interval);
 
 
 #endif /*INTEGRAL_H*/

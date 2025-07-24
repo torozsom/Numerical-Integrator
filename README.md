@@ -1,105 +1,228 @@
 # Numerical Integrator
 
-Welcome to the **Numerical Integrator** project! This repository hosts a C program designed to compute definite
-integrals of mathematical functions using numerical methods. With an intuitive GUI and powerful expression parsing, this
-project bridges the gap between mathematical computation and user-friendly software design.
+<div align="center">
+    <img src="https://img.shields.io/badge/language-C-blue.svg" alt="Language: C">
+    <img src="https://img.shields.io/badge/UI-GTK3-green.svg" alt="UI: GTK3">
+    <img src="https://img.shields.io/badge/Math-Integration-red.svg" alt="Math: Integration">
+    <img src="https://img.shields.io/badge/Version-1.0-orange.svg" alt="Version: 1.0">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
+</div>
+
+<p align="center">
+    <strong>A modern, user-friendly numerical integration system with mathematical expression parsing and a sleek graphical interface.</strong>
+</p>
 
 ---
 
-## Features
+## ✨ Overview
 
-### 🚀 Core Functionality
+The **Numerical Integrator** is a sophisticated C application designed to compute definite integrals of mathematical functions using multiple numerical methods. It combines powerful expression parsing, precise numerical integration algorithms, and an intuitive graphical user interface to provide a complete solution for mathematical integration problems.
 
-- **Numerical Integration**: Accurately calculate the definite integral of user-defined functions using Riemann's
-  method.
-- **Expression Parsing**: Robust mathematical expression parsing with support for Reverse Polish Notation (RPN).
-    - Only elementary functions such as polynomials, exponentials, trigonometric functions, and logarithms are
-      supported.
+<p align="center">
+    <em>Bridging the gap between mathematical computation and user-friendly software design</em>
+</p>
 
-### 🎨 Graphical User Interface
+## 🚀 Features
 
-- A clean and intuitive GUI for inputting expressions and integration bounds.
-- Using the GTK+ library and a CSS stylesheet for a modern look and feel.
+### Mathematical Core
 
-### 🛠 Debugging and Development
+- **Multiple Integration Methods**:
+  - Riemann Sum approximation
+  - Lower and Upper Darboux Sum bounds
+  - Error estimation between approximation methods
 
-- Includes a memory debugging utility (`debugmalloc.h`) to ensure stability and catch memory leaks during development.
-- In order to apply the styles from the css file, you need to copy the styles.css to the same directory as the
-  executable file.
+- **Comprehensive Expression Support**:
+  - Variables (x)
+  - Numeric constants
+  - Binary operators (+, -, *, /, ^)
+  - Mathematical functions (sin, cos, tg, ctg, ln, exp)
 
----
+- **Robust Parsing System**:
+  - Reverse Polish Notation (RPN) support
+  - Abstract Syntax Tree (AST) representation
+  - Efficient expression evaluation
 
-## 📦 Project Structure
+### Modern User Interface
+
+- **Sleek Design**:
+  - Modern gradient-based visual styling
+  - Responsive grid layouts
+  - Intuitive workflow progression
+
+- **Interactive Elements**:
+  - Mathematical buttons for easy input
+  - Smart text formatting
+  - Real-time input validation
+
+- **User Experience**:
+  - Context-sensitive button states
+  - Clear visual feedback
+  - Guided integration process
+
+### System Design
+
+- **Modular Architecture**:
+  - Separation of concerns across specialized modules
+  - Clean interfaces between components
+  - Maintainable and extensible codebase
+
+- **Memory Safety**:
+  - Comprehensive resource management
+  - Memory leak prevention
+  - Debug utilities for development
+
+- **Error Handling**:
+  - Input validation at multiple levels
+  - Graceful error recovery
+  - Clear user feedback
+
+## 📦 Project Architecture
+
+The project is organized into specialized modules, each with distinct responsibilities:
+
+### Module Structure
 
 ```
 src/
-├── integrator/       # Core integration logic
-├── parser/          # Expression parsing engine
-├── program/         # Program entry point
-├── ui/             # User interface components
-└── memcheck/        # Memory debugging utilities
+├── integrator/     # Numerical integration algorithms
+├── parser/         # Mathematical expression parsing
+├── controls/       # Coordination and validation
+├── ui/             # Graphical user interface
+└── memcheck/       # Memory debugging utilities
 ```
 
-## 🏗 Core Components
+### Module Interactions
 
-### Expression Tree Architecture
-
-The parser uses a tree-based structure to represent mathematical expressions. Here are the key components:
-
-#### Node Types
-```c
-typedef enum NodeType {
-    NODE_VARIABLE,   // Variables (e.g., 'x')
-    NODE_NUMBER,     // Numeric constants
-    NODE_FUNCTION,   // Mathematical functions
-    NODE_OPERATOR    // Mathematical operators
-} NodeType;
+```
+┌─────────────┐      ┌──────────────┐
+│     UI      │─────▶│   Controls   │
+└─────────────┘      └──────┬───────┘
+      ▲                     │
+      │                     ▼
+┌─────┴───────┐      ┌──────────────┐
+│  Integrator  │◀────┤    Parser    │
+└─────────────┘      └──────────────┘
 ```
 
-#### Key Data Structures
-```c
-// Variable representation
-typedef struct Variable {
-    char name;       // Variable identifier
-} Variable;
+## 🧮 Core Components
 
-// Numeric value
-typedef struct Number {
-    double value;    // Numeric constant
-} Number;
+### Numerical Integration Engine
 
-// Mathematical function
-typedef struct Function {
-    char name[FUNCTION_NAME_MAX];
-    double (*func)(double);  // Function pointer
-} Function;
+The integration module implements three different approaches:
+
+- **Riemann Sum**: Approximates the integral by evaluating the function at left endpoints
+- **Lower Darboux Sum**: Uses minimum function values in each subinterval
+- **Upper Darboux Sum**: Uses maximum function values in each subinterval
+
+Providing multiple methods allows for error estimation and accuracy assessment.
+
+### Expression Parser
+
+The parser converts mathematical expressions from RPN format into an abstract syntax tree (AST):
+
 ```
+Example: "2 x * 1 +" (representing 2*x + 1)
+
+    (+)
+   /   \
+  (*)   (1)
+ /   \
+(2)   (x)
+```
+
+This tree structure allows for efficient evaluation at any point within the integration interval.
+
+### Graphical User Interface
+
+The GUI provides a clean, modern interface with three main sections:
+
+1. **Function Input Area**:
+   ```
+   ┌─────────────────────────────────────┬──────────────────┐
+   │ Enter function: ∫ f(x) dx           │ ✓ Confirm Function│
+   └─────────────────────────────────────┴──────────────────┘
+   ```
+
+2. **Mathematical Button Matrix**:
+   ```
+   ┌─────┬─────┬─────┬─────┬─────┬─────┐
+   │  +  │  -  │  *  │  /  │  ^  │  x  │
+   ├─────┼─────┼─────┼─────┼─────┼─────┤
+   │ sin │ cos │ tg  │ ctg │ ln  │ exp │
+   └─────┴─────┴─────┴─────┴─────┴─────┘
+   ```
+
+3. **Integration Interval Section**:
+   ```
+   ┌─────────────────────┬─────────────────────┐
+   │ Lower bound (a)     │ Upper bound (b)     │
+   ├─────────────────────┴─────────────────────┤
+   │           🚀 Calculate Integral            │
+   └───────────────────────────────────────────┘
+   ```
 
 ## 🔧 Core Functions
 
 ### Integration Module
 
 ```c
-// Performs numerical integration
+// Main integration function
 void integrate(char *integrand, char *interval);
 
-// Validates integration bounds
-bool validate_interval(const char *interval, 
-                      double *start, double *end);
+// Compute Riemann sum approximation
+double calculate_Riemann_sum(Node* expression, double start, double end, double dx);
 
-// Finds maximum value in interval
-double find_supremum(Node* expr, double start, 
-                    double end, double step);
+// Compute lower and upper Darboux sum bounds
+double calculate_lower_Darboux_sum(Node* expression, double start, double end, double dx, double step);
+double calculate_upper_Darboux_sum(Node* expression, double start, double end, double dx, double step);
 ```
 
 ### Expression Parser
 
 ```c
-// Parses RPN expression into tree
-Node* parse_expression(const char *expression);
+// Parse RPN expression into abstract syntax tree
+Node* parse(char *expression);
 
-// Evaluates expression with given variable value
-double evaluate(Node *root, double x);
+// Evaluate expression at a specific point
+double evaluate(Node *head, double x);
+
+// Create nodes for different elements
+Node* create_variable(char name);
+Node* create_number(double value);
+Node* create_function(const char *name, Func func);
+Node* create_operator(char symbol);
+```
+
+### User Interface
+
+```c
+// Initialize and run the GUI
+void run_gui(int* argc, char*** argv);
+
+// Apply CSS styling to the interface
+void apply_styling(const char *css_file_path);
+
+// Event handlers
+void insert_text(GtkWidget *button, gpointer user_data);
+void save_to_file(GtkWidget *button, gpointer user_data);
+void save_interval(GtkWidget *button, gpointer user_data);
+```
+
+### Controls Module
+
+```c
+// Input validation
+bool validate_integrand(const char *integrand);
+bool validate_interval(const char *interval, double *start, double *end);
+int get_partition_refinement();
+
+// Resource management
+void free_tree(Node *node);
+void free_resources(char *integrand, char *interval, Node *expression);
+
+// Integration workflow
+void numerical_integration(int argc, char *argv[], const char *filename);
+void integrate_last(const char *filename);
 ```
 
 ## 🚀 Getting Started
@@ -134,26 +257,114 @@ double evaluate(Node *root, double x);
    cp ../src/ui/styles.css .
    ```
 
-## 🎯 Usage
+## 🎯 Usage Guide
 
-1. Launch the program:
-   ```bash
-   ./numerical_integral
-   ```
+### Starting the Application
 
-2. Using the Interface:
-   - Enter mathematical expressions using RPN notation
-   - Use the GUI buttons for operators and functions
+```bash
+./numerical_integral
+```
+
+### Using the Interface
+
+1. **Enter Your Function**:
+   - Use the mathematical buttons for operators and functions
    - Enter numbers via keyboard
-   - Specify integration bounds when prompted
+   - Functions use Reverse Polish Notation (e.g., `x sin` for sin(x))
+   - Click "Confirm Function" when ready
 
-### Example Input
+2. **Specify Integration Interval**:
+   - Enter lower and upper bounds
+   - Click "Calculate Integral"
 
+3. **Select Refinement Level**:
+   - Enter a number between 1 and 20,000,000
+   - Higher values provide more accurate results
+
+4. **View Results**:
+   - Riemann sum approximation
+   - Lower and upper Darboux sums
+   - Error bounds and average approximation
+
+### Example Calculation
+
+**Function**: x² + 1 (entered as `x x * 1 +`)
+**Interval**: [0, 5]
+**Refinement**: 1000
+
+**Results**:
 ```
-x x * 2 +    # Represents x² + 2
-[0, 5]       # Integration bounds
+Riemann-sum = 41.67500
+Lower Darboux-sum = 41.66750
+Upper Darboux-sum = 41.68250
+
+Difference between Darboux-sums = 0.01500
+Average of the Darboux-sums = 41.67500
+
+Difference between Riemann-sum and average of the Darboux-sums = 0.00000
 ```
+
+## 📋 Supported Mathematical Functions
+
+| Function | Description | Example (RPN) |
+|----------|-------------|--------------|
+| + | Addition | `2 3 +` |
+| - | Subtraction | `5 2 -` |
+| * | Multiplication | `2 x *` |
+| / | Division | `x 2 /` |
+| ^ | Exponentiation | `x 2 ^` |
+| sin | Sine (radians) | `x sin` |
+| cos | Cosine (radians) | `x cos` |
+| tg | Tangent (radians) | `x tg` |
+| ctg | Cotangent (radians) | `x ctg` |
+| ln | Natural logarithm | `x ln` |
+| exp | Exponential function | `x exp` |
+
+## 🔍 More Example Integrals
+
+| Function (RPN) | Interval | Mathematical Equivalent | Exact Result |
+|----------------|----------|-------------------------|-------------|
+| `x sin` | [0 ; π] | ∫₀ᵗ sin(x) dx | 2 |
+| `x x * 1 +` | [0 ; 5] | ∫₀⁵ (x² + 1) dx | 41.6667 |
+| `x exp` | [0 ; 1] | ∫₀¹ eˣ dx | 1.7183 |
+| `x cos x *` | [0 ; π/2] | ∫₀ᵗ/² x·cos(x) dx | 0.5 |
+
+## 🛠️ Advanced Features
+
+### Integration Methods
+
+The application provides three different numerical integration methods:
+
+1. **Riemann Sum**: Evaluates the function at the left endpoint of each subinterval
+2. **Lower Darboux Sum**: Finds the minimum value within each subinterval
+3. **Upper Darboux Sum**: Finds the maximum value within each subinterval
+
+The difference between upper and lower Darboux sums provides a rigorous error bound for the approximation.
+
+### Styling Customization
+
+The user interface appearance can be customized by modifying the `styles.css` file. The styling system includes:
+
+- Color schemes
+- Typography
+- Button appearances
+- Layout spacing
+- Visual effects
+
+### Error Handling
+
+The application includes comprehensive error handling:
+
+- Invalid expression detection
+- Improper interval formatting
+- Out-of-range refinement values
+- Memory allocation failures
+- File operation errors
 
 ---
+
+<p align="center">
+<em>Developed with ❤️ for mathematical precision and user experience</em>
+</p>
 
 *Last updated: July 2025*

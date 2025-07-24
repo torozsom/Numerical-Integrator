@@ -165,7 +165,7 @@ typedef struct FunctionEntry {
 
 
 
-double cot(const double x);
+double cot(double x);
 
 void push(NodeStack *stack, Node *node);
 

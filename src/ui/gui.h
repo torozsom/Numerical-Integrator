@@ -11,9 +11,11 @@
 #ifndef GUI_H
 #define GUI_H
 
+
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdio.h>
+
 
 #define INITIAL_SIZE 256
 
@@ -75,10 +77,6 @@ typedef struct Labels {
 } Labels;
 
 
-
-void read_file(const char *filename, char **last, char **second_last);
-
-void remove_spaces(char *str);
 
 void apply_styling(const char *css_file_path);
 
