@@ -318,15 +318,6 @@ Difference between Riemann-sum and average of the Darboux-sums = 0,062549
 | ln | Natural logarithm | `x ln` |
 | exp | Exponential function | `x exp` |
 
-## 🔍 More Example Integrals
-
-| Function (RPN) | Interval | Mathematical Equivalent | Exact Result |
-|----------------|----------|-------------------------|-------------|
-| `x sin` | [0 ; π] | ∫₀ᵗ sin(x) dx | 2 |
-| `x x * 1 +` | [0 ; 5] | ∫₀⁵ (x² + 1) dx | 41.6667 |
-| `x exp` | [0 ; 1] | ∫₀¹ eˣ dx | 1.7183 |
-| `x cos x *` | [0 ; π/2] | ∫₀ᵗ/² x·cos(x) dx | 0.5 |
-
 ## 🛠️ Advanced Features
 
 ### Integration Methods
