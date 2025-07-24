@@ -19,6 +19,8 @@
 
 // Used for the integrator module:
 
+double timespec_diff_ms(struct timespec *start, struct timespec *end);
+
 bool validate_integrand(const char *integrand);
 
 bool validate_interval(const char *interval, double *start, double *end);
@@ -27,7 +29,8 @@ int get_partition_refinement();
 
 void print_signed_value(bool minus, const double value);
 
-void log_integral_values(bool minus, double Riemann_sum, double lower_Darboux_sum, double upper_Darboux_sum);
+void log_integral_values(bool minus, double Riemann_sum, double lower_Darboux_sum,
+                         double upper_Darboux_sum, double *times_elapsed);
 
 
 // Resource memory deallocation:

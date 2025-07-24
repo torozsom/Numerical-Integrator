@@ -13,6 +13,11 @@
 #include "debugmalloc.h"
 
 
+double timespec_diff_ms(struct timespec *start, struct timespec *end) {
+    return (end->tv_sec - start->tv_sec) * 1000.0 + (end->tv_nsec - start->tv_nsec) / 1000000.0;
+}
+
+
 /**
  * Validates the given integrand to ensure it meets the maximum allowed length constraint.
  *
@@ -93,7 +98,7 @@ int get_partition_refinement() {
  * @param value The double value to be printed.
  */
 void print_signed_value(const bool minus, const double value) {
-    printf("%.6f\n", minus ? -value : value);
+    printf("%.8f\n", minus ? -value : value);
 }
 
 
@@ -108,16 +113,21 @@ void print_signed_value(const bool minus, const double value) {
  * @param Riemann_sum The computed Riemann sum of the integral.
  * @param lower_Darboux_sum The computed lower Darboux sum of the integral.
  * @param upper_Darboux_sum The computed upper Darboux sum of the integral.
+ * @param times_elapsed Optional pointer to a double array where the elapsed times can be stored.
  */
 void log_integral_values(const bool minus, const double Riemann_sum, const double lower_Darboux_sum,
-                         const double upper_Darboux_sum) {
+                         const double upper_Darboux_sum, double *times_elapsed) {
     printf("Riemann-sum = ");
     print_signed_value(minus, Riemann_sum);
+    printf("Time spent on Riemann-sum calculation = %.6f ms\n\n", times_elapsed[0]);
+
     printf("Lower Darboux-sum = ");
     print_signed_value(minus, lower_Darboux_sum);
+    printf("Time spent on lower Darboux-sum calculation = %.6f ms\n\n", times_elapsed[1]);
+
     printf("Upper Darboux-sum = ");
     print_signed_value(minus, upper_Darboux_sum);
-    printf("\n");
+    printf("Time spent on upper Darboux-sum calculation = %.6f ms\n\n", times_elapsed[2]);
 
     const double Darboux_difference = fabs(upper_Darboux_sum - lower_Darboux_sum);
     printf("Difference between Darboux-sums = %.6f\n", Darboux_difference);

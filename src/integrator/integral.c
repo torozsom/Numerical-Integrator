@@ -224,12 +224,28 @@ void integrate(char *integrand, char *interval) {
 
     // Size of each subinterval
     const double dx = (end - start) / refinement;
+
+    struct timespec start_time, end_time;
+
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start_time);
     const double Riemann_sum = calculate_Riemann_sum(expression, start, end, dx);
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end_time);
+    const double time_of_Riemann = timespec_diff_ms(&start_time, &end_time);
 
     constexpr double step = 1E-05; // The step size for evaluating the extremum
-    const double lower_Darboux_sum = calculate_lower_Darboux_sum(expression, start, end, dx, step);
-    const double upper_Darboux_sum = calculate_upper_Darboux_sum(expression, start, end, dx, step);
 
-    log_integral_values(minus, Riemann_sum, lower_Darboux_sum, upper_Darboux_sum);
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start_time);
+    const double lower_Darboux_sum = calculate_lower_Darboux_sum(expression, start, end, dx, step);
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end_time);
+    const double time_of_lower_Darboux = timespec_diff_ms(&start_time, &end_time);
+
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start_time);
+    const double upper_Darboux_sum = calculate_upper_Darboux_sum(expression, start, end, dx, step);
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end_time);
+    const double time_of_upper_Darboux = timespec_diff_ms(&start_time, &end_time);
+
+    double time_spent[3] = {time_of_Riemann, time_of_lower_Darboux, time_of_upper_Darboux};
+
+    log_integral_values(minus, Riemann_sum, lower_Darboux_sum, upper_Darboux_sum, time_spent);
     free_resources(integrand, interval, expression);
 }
