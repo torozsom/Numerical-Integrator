@@ -133,18 +133,18 @@ void log_integral_values(const bool minus, const double Riemann_sum,
                          const double* times_elapsed) {
     printf("Riemann-sum = ");
     print_signed_value(minus, Riemann_sum);
-    printf("Time spent on Riemann-sum calculation = %.6f ms\n\n",
-           times_elapsed[0]);
+    printf("Time spent on Riemann-sum calculation = %.4f ms (= %.6f sec)\n\n",
+           times_elapsed[0], times_elapsed[0] / 1000.0);
 
     printf("Lower Darboux-sum = ");
     print_signed_value(minus, lower_Darboux_sum);
-    printf("Time spent on lower Darboux-sum calculation = %.6f ms\n\n",
-           times_elapsed[1]);
+    printf("Time spent on lower Darboux-sum calculation = %.4f ms (= %.6f sec)\n\n",
+           times_elapsed[1], times_elapsed[1] / 1000.0);
 
     printf("Upper Darboux-sum = ");
     print_signed_value(minus, upper_Darboux_sum);
-    printf("Time spent on upper Darboux-sum calculation = %.6f ms\n\n",
-           times_elapsed[2]);
+    printf("Time spent on upper Darboux-sum calculation = %.4f ms (= %.6f sec)\n\n",
+           times_elapsed[2], times_elapsed[2] / 1000.0);
 
     const double Darboux_difference =
         fabs(upper_Darboux_sum - lower_Darboux_sum);
