@@ -292,14 +292,14 @@ void integrate_last(const char *filename);
 
 **Results**:
 ```
-Riemann-sum = 41.67500
-Lower Darboux-sum = 41.66750
-Upper Darboux-sum = 41.68250
+Riemann-sum = 46,734187
+Lower Darboux-sum = 46,734187
+Upper Darboux-sum = 46,859285
 
-Difference between Darboux-sums = 0.01500
-Average of the Darboux-sums = 41.67500
+Difference between Darboux-sums = 0,125098
+Average of the Darboux-sums = 46,796736
 
-Difference between Riemann-sum and average of the Darboux-sums = 0.00000
+Difference between Riemann-sum and average of the Darboux-sums = 0,062549
 ```
 
 ## 📋 Supported Mathematical Functions
