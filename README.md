@@ -4,8 +4,6 @@
     <img src="https://img.shields.io/badge/language-C-blue.svg" alt="Language: C">
     <img src="https://img.shields.io/badge/UI-GTK3-green.svg" alt="UI: GTK3">
     <img src="https://img.shields.io/badge/Math-Integration-red.svg" alt="Math: Integration">
-    <img src="https://img.shields.io/badge/Version-1.0-orange.svg" alt="Version: 1.0">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
 </div>
 
 <p align="center">
