@@ -4,8 +4,6 @@
     <img src="https://img.shields.io/badge/language-C-blue.svg" alt="Language: C">
     <img src="https://img.shields.io/badge/UI-GTK3-green.svg" alt="UI: GTK3">
     <img src="https://img.shields.io/badge/Math-Integration-red.svg" alt="Math: Integration">
-    <img src="https://img.shields.io/badge/Version-1.0-orange.svg" alt="Version: 1.0">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
 </div>
 
 <p align="center">
@@ -294,14 +292,14 @@ void integrate_last(const char *filename);
 
 **Results**:
 ```
-Riemann-sum = 41.67500
-Lower Darboux-sum = 41.66750
-Upper Darboux-sum = 41.68250
+Riemann-sum = 46,734187
+Lower Darboux-sum = 46,734187
+Upper Darboux-sum = 46,859285
 
-Difference between Darboux-sums = 0.01500
-Average of the Darboux-sums = 41.67500
+Difference between Darboux-sums = 0,125098
+Average of the Darboux-sums = 46,796736
 
-Difference between Riemann-sum and average of the Darboux-sums = 0.00000
+Difference between Riemann-sum and average of the Darboux-sums = 0,062549
 ```
 
 ## 📋 Supported Mathematical Functions
@@ -319,15 +317,6 @@ Difference between Riemann-sum and average of the Darboux-sums = 0.00000
 | ctg | Cotangent (radians) | `x ctg` |
 | ln | Natural logarithm | `x ln` |
 | exp | Exponential function | `x exp` |
-
-## 🔍 More Example Integrals
-
-| Function (RPN) | Interval | Mathematical Equivalent | Exact Result |
-|----------------|----------|-------------------------|-------------|
-| `x sin` | [0 ; π] | ∫₀ᵗ sin(x) dx | 2 |
-| `x x * 1 +` | [0 ; 5] | ∫₀⁵ (x² + 1) dx | 41.6667 |
-| `x exp` | [0 ; 1] | ∫₀¹ eˣ dx | 1.7183 |
-| `x cos x *` | [0 ; π/2] | ∫₀ᵗ/² x·cos(x) dx | 0.5 |
 
 ## 🛠️ Advanced Features
 
