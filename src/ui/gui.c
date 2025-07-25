@@ -70,7 +70,7 @@ void apply_styling(const char* css_file_path) {
 void run_gui(int* argc, char*** argv) {
     Grids grids;
     Buttons buttons;
-    Entry entry;
+    Entries entries;
     Labels labels;
 
     const char* button_labels[] = {"+",   "-",   "*",  "/",   "^",  "x",
@@ -121,17 +121,17 @@ void run_gui(int* argc, char*** argv) {
     gtk_grid_set_column_spacing(GTK_GRID(grids.func), 10);
     gtk_grid_set_row_spacing(GTK_GRID(grids.func), 10);
 
-    entry.func = gtk_entry_new();
-    gtk_entry_set_placeholder_text(GTK_ENTRY(entry.func),
+    entries.func = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entries.func),
                                    "Enter function: ∫ f(x) dx");
-    gtk_widget_set_hexpand(entry.func, TRUE);
+    gtk_widget_set_hexpand(entries.func, TRUE);
 
     buttons.okFunc = gtk_button_new_with_label("✓ Confirm Function");
     GtkStyleContext* ok_context = gtk_widget_get_style_context(buttons.okFunc);
     gtk_style_context_add_class(ok_context, "ok-button");
 
-    gtk_grid_attach(GTK_GRID(grids.func), entry.func, 0, 0, 1, 1);
-    gtk_grid_attach_next_to(GTK_GRID(grids.func), buttons.okFunc, entry.func,
+    gtk_grid_attach(GTK_GRID(grids.func), entries.func, 0, 0, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(grids.func), buttons.okFunc, entries.func,
                             GTK_POS_RIGHT, 1, 1);
 
     GtkWidget* buttons_label =
@@ -163,12 +163,12 @@ void run_gui(int* argc, char*** argv) {
             gtk_widget_set_vexpand(buttons.matrix[index], TRUE);
 
             g_signal_connect(buttons.matrix[index], "clicked",
-                             G_CALLBACK(insert_text), &entry);
+                             G_CALLBACK(insert_text), &entries);
         }
     }
 
     g_signal_connect(buttons.okFunc, "clicked", G_CALLBACK(save_to_file),
-                     &entry);
+                     &entries);
     g_signal_connect(buttons.okFunc, "clicked", G_CALLBACK(disable_button),
                      NULL);
 
@@ -183,26 +183,26 @@ void run_gui(int* argc, char*** argv) {
     gtk_box_pack_start(GTK_BOX(main_container), grids.interval, FALSE, FALSE,
                        8);
 
-    entry.start = gtk_entry_new();
-    gtk_entry_set_placeholder_text(GTK_ENTRY(entry.start), "Lower bound (a)");
-    gtk_widget_set_hexpand(entry.start, TRUE);
+    entries.start = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entries.start), "Lower bound (a)");
+    gtk_widget_set_hexpand(entries.start, TRUE);
 
-    entry.end = gtk_entry_new();
-    gtk_entry_set_placeholder_text(GTK_ENTRY(entry.end), "Upper bound (b)");
-    gtk_widget_set_hexpand(entry.end, TRUE);
+    entries.end = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entries.end), "Upper bound (b)");
+    gtk_widget_set_hexpand(entries.end, TRUE);
 
     buttons.okInterval = gtk_button_new_with_label("🚀 Calculate Integral");
     GtkStyleContext* calc_context =
         gtk_widget_get_style_context(buttons.okInterval);
     gtk_style_context_add_class(calc_context, "ok-button");
 
-    gtk_grid_attach(GTK_GRID(grids.interval), entry.start, 0, 0, 1, 1);
-    gtk_grid_attach_next_to(GTK_GRID(grids.interval), entry.end, entry.start,
-                            GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach(GTK_GRID(grids.interval), entries.start, 0, 0, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(grids.interval), entries.end,
+                            entries.start, GTK_POS_RIGHT, 1, 1);
     gtk_grid_attach(GTK_GRID(grids.interval), buttons.okInterval, 0, 1, 2, 1);
 
     g_signal_connect(buttons.okInterval, "clicked", G_CALLBACK(save_interval),
-                     &entry);
+                     &entries);
     g_signal_connect(buttons.okInterval, "clicked", G_CALLBACK(over), window);
 
     gtk_widget_show_all(window);
@@ -227,7 +227,7 @@ void run_gui(int* argc, char*** argv) {
  *                  of type Entry containing the target GtkEntry widget.
  */
 void insert_text(GtkWidget* button, gpointer user_data) {
-    Entry* entry = (Entry*)user_data;
+    Entries* entry = (Entries*)user_data;
     const char* text = gtk_button_get_label(GTK_BUTTON(button));
 
     if (strcmp(text, "sin") == 0 || strcmp(text, "cos") == 0 ||
@@ -261,7 +261,7 @@ void insert_text(GtkWidget* button, gpointer user_data) {
  * be saved.
  */
 void save_to_file(GtkWidget* button, gpointer user_data) {
-    Entry* entry = (Entry*)user_data;
+    Entries* entry = (Entries*)user_data;
     const gchar* text_to_save = gtk_entry_get_text(GTK_ENTRY(entry->func));
     const char* filename = "functions.txt";
 
@@ -290,7 +290,7 @@ void save_to_file(GtkWidget* button, gpointer user_data) {
  * end interval.
  */
 void save_interval(GtkWidget* button, gpointer user_data) {
-    Entry* entry = (Entry*)user_data;
+    Entries* entry = (Entries*)user_data;
     const gchar* text1 = gtk_entry_get_text(GTK_ENTRY(entry->start));
     const gchar* text2 = gtk_entry_get_text(GTK_ENTRY(entry->end));
     const char* filename = "functions.txt";

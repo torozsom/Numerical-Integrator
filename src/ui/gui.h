@@ -47,18 +47,18 @@ typedef struct Buttons {
 
 
 /**
- * @struct Entry
+ * @struct Entries
  *
  * A structure used to manage input entries related to the function and interval
  * specification in the GUI for the numerical integral application. It holds
  * widgets for inputting the function expression and defining the integration
  * interval (start and end points).
  */
-typedef struct Entry {
+typedef struct Entries {
     GtkWidget* func;
     GtkWidget* start;
     GtkWidget* end;
-} Entry;
+} Entries;
 
 
 /**
