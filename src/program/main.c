@@ -24,7 +24,7 @@
  * integration, viewing saved functions from a file, or exiting the program.
  * User inputs are processed in a loop until an exit condition is met.
  */
-int main(int argc, char* argv[]) {
+int main(const int argc, char* argv[]) {
     print_rules();
     int num;
 
@@ -35,20 +35,20 @@ int main(int argc, char* argv[]) {
         printf("\n");
 
         switch (num) {
-        case 1:
-            numerical_integration(argc, argv, filename);
-            break;
+            case 1:
+                numerical_integration(argc, argv, filename);
+                break;
 
-        case 2:
-            integrate_last(filename);
-            break;
+            case 2:
+                integrate_last(filename);
+                break;
 
-        case 3:
-            log_file_content(filename);
-            break;
+            case 3:
+                log_file_content(filename);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
     } while (num == 1 || num == 2 || num == 3);
 

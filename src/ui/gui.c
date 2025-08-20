@@ -30,12 +30,16 @@ void apply_styling(const char* css_file_path) {
     GdkScreen* screen = gdk_display_get_default_screen(display);
 
     GError* error = nullptr;
-    gboolean success = gtk_css_provider_load_from_file(
-        provider, g_file_new_for_path(css_file_path), &error);
+    const gboolean success = gtk_css_provider_load_from_file(
+        provider,
+        g_file_new_for_path(css_file_path),
+        &error
+    );
 
     if (!success) {
         if (error) {
-            g_printerr("Failed to load CSS file '%s': %s\n", css_file_path,
+            g_printerr("Failed to load CSS file '%s': %s\n",
+                       css_file_path,
                        error->message);
             g_error_free(error);
         } else {
@@ -149,7 +153,7 @@ void run_gui(int* argc, char*** argv) {
 
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 2; j++) {
-            int index = i * 2 + j;
+            const int index = i * 2 + j;
             buttons.matrix[index] =
                 gtk_button_new_with_label(button_labels[index]);
 
@@ -180,8 +184,9 @@ void run_gui(int* argc, char*** argv) {
     gtk_grid_set_column_homogeneous(GTK_GRID(grids.interval), TRUE);
     gtk_grid_set_row_spacing(GTK_GRID(grids.interval), 8);
     gtk_grid_set_column_spacing(GTK_GRID(grids.interval), 8);
-    gtk_box_pack_start(GTK_BOX(main_container), grids.interval, FALSE, FALSE,
-                       8);
+
+    gtk_box_pack_start(GTK_BOX(main_container),
+                       grids.interval,FALSE,FALSE, 8);
 
     entries.start = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(entries.start), "Lower bound (a)");
@@ -227,7 +232,7 @@ void run_gui(int* argc, char*** argv) {
  *                  of type Entry containing the target GtkEntry widget.
  */
 void insert_text(GtkWidget* button, gpointer user_data) {
-    Entries* entry = (Entries*)user_data;
+    const Entries* entry = (Entries*)user_data;
     const char* text = gtk_button_get_label(GTK_BUTTON(button));
 
     if (strcmp(text, "sin") == 0 || strcmp(text, "cos") == 0 ||
@@ -261,7 +266,7 @@ void insert_text(GtkWidget* button, gpointer user_data) {
  * be saved.
  */
 void save_to_file(GtkWidget* button, gpointer user_data) {
-    Entries* entry = (Entries*)user_data;
+    const Entries* entry = (Entries*)user_data;
     const gchar* text_to_save = gtk_entry_get_text(GTK_ENTRY(entry->func));
     const char* filename = "functions.txt";
 
@@ -290,7 +295,7 @@ void save_to_file(GtkWidget* button, gpointer user_data) {
  * end interval.
  */
 void save_interval(GtkWidget* button, gpointer user_data) {
-    Entries* entry = (Entries*)user_data;
+    const Entries* entry = (Entries*)user_data;
     const gchar* text1 = gtk_entry_get_text(GTK_ENTRY(entry->start));
     const gchar* text2 = gtk_entry_get_text(GTK_ENTRY(entry->end));
     const char* filename = "functions.txt";

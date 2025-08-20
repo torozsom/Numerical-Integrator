@@ -394,7 +394,9 @@ void log_file_content(const char* filename) {
 void integrate_last(const char* filename) {
     char *integrand, *interval;
     read_last_two_lines(filename, &integrand, &interval);
+
     printf("Function to integrate: %s", integrand);
     printf("Interval: %s\n", interval);
+
     integrate(integrand, interval);
 }

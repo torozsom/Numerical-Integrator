@@ -75,7 +75,7 @@ double find_infimum(Node* expr, const double start, const double end,
     double infimum = evaluate(expr, x);
 
     while (x <= end) {
-        double value = evaluate(expr, x);
+        const double value = evaluate(expr, x);
         if (value < infimum)
             infimum = value;
         x += step;
@@ -151,7 +151,7 @@ double find_supremum(Node* expr, const double start, const double end,
     double supremum = evaluate(expr, x);
 
     while (x <= end) {
-        double value = evaluate(expr, x);
+        const double value = evaluate(expr, x);
         if (value > supremum)
             supremum = value;
         x += step;
@@ -283,7 +283,7 @@ void integrate(char* integrand, char* interval) {
     const double time_of_upper_Darboux =
         timespec_diff_ms(&start_time, &end_time);
 
-    double time_spent[3] = {time_of_Riemann, time_of_lower_Darboux,
+    const double time_spent[3] = {time_of_Riemann, time_of_lower_Darboux,
                             time_of_upper_Darboux};
 
     log_integral_values(minus, Riemann_sum, lower_Darboux_sum,

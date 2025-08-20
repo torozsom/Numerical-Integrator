@@ -29,18 +29,18 @@ enum {
  * just fine, however not declared. */
 #ifdef _WIN32
 /* windows */
-#include <process.h>
-#ifdef _MSC_VER
+#    include <process.h>
+#    ifdef _MSC_VER
 /* visual studio, getenv/getpid deprecated warning */
-#pragma warning(disable : 4996)
-#else
+#        pragma warning(disable : 4996)
+#    else
 /* other windows. the declaration is unfortunately hidden
  * in mingw header files by ifdefs. */
 int putenv(const char*);
-#endif
+#    endif
 #else
 /* posix */
-#include <unistd.h>
+#    include <unistd.h>
 #endif
 
 /* linked list entry for allocated blocks */
@@ -98,7 +98,7 @@ static DebugmallocData* debugmalloc_singleton(void) {
             putenv(envstr);
         } else {
             /* another copy of this function already created it. */
-            int ok = sscanf(envptr, "%p", &instance);
+            const int ok = sscanf(envptr, "%p", &instance);
             if (ok != 1) {
                 fprintf(stderr, "debugmalloc: nem lehet ertelmezni: %s!\n",
                         envptr);
@@ -111,7 +111,7 @@ static DebugmallocData* debugmalloc_singleton(void) {
 }
 
 /* better version of strncpy, always terminates string with \0. */
-static void debugmalloc_strlcpy(char* dest, char const* src, size_t destsize) {
+static void debugmalloc_strlcpy(char* dest, char const* src, const size_t destsize) {
     strncpy(dest, src, destsize);
     dest[destsize - 1] = '\0';
 }
@@ -127,7 +127,7 @@ static void debugmalloc_log_file(char const* logfilename) {
 }
 
 /* set the maximum size of one block. useful for debugging purposes. */
-static void debugmalloc_max_block_size(long max_block_size) {
+static void debugmalloc_max_block_size(const long max_block_size) {
     DebugmallocData* instance = debugmalloc_singleton();
     instance->max_block_size = max_block_size;
 }
@@ -161,7 +161,7 @@ static void debugmalloc_log(char const* format, ...) {
  * of the block is initialized with the canary characters. if 'zero' is
  * true, the user memory area is zero-initialized, otherwise it is also
  * filled with the canary character to simulate garbage in memory. */
-static void debugmalloc_memory_init(DebugmallocEntry* elem, bool zero) {
+static void debugmalloc_memory_init(DebugmallocEntry* elem, const bool zero) {
     unsigned char* real_mem = (unsigned char*)elem->real_mem;
     unsigned char* user_mem = (unsigned char*)elem->user_mem;
     unsigned char* canary1 = real_mem;
@@ -174,8 +174,9 @@ static void debugmalloc_memory_init(DebugmallocEntry* elem, bool zero) {
 /* check canary, return true if ok, false if corrupted. */
 static bool debugmalloc_canary_ok(DebugmallocEntry const* elem) {
     unsigned char* real_mem = (unsigned char*)elem->real_mem;
-    unsigned char* canary1 = real_mem;
-    unsigned char* canary2 = real_mem + debugmalloc_canary_size + elem->size;
+    const unsigned char* canary1 = real_mem;
+    const unsigned char* canary2 =
+        real_mem + debugmalloc_canary_size + elem->size;
     for (size_t i = 0; i < debugmalloc_canary_size; ++i) {
         if (canary1[i] != debugmalloc_canary_char)
             return false;
@@ -186,7 +187,7 @@ static bool debugmalloc_canary_ok(DebugmallocEntry const* elem) {
 }
 
 /* dump memory contents to log file. */
-static void debugmalloc_dump_memory(char const* mem, size_t size) {
+static void debugmalloc_dump_memory(char const* mem, const size_t size) {
     for (unsigned y = 0; y < (size + 15) / 16; y++) {
         char line[80];
         int pos = 0;
@@ -200,7 +201,7 @@ static void debugmalloc_dump_memory(char const* mem, size_t size) {
         pos += sprintf(line + pos, "  ");
         for (unsigned x = 0; x < 16; x++) {
             if (y * 16 + x < size) {
-                unsigned char c = mem[y * 16 + x];
+                const unsigned char c = mem[y * 16 + x];
                 pos += sprintf(line + pos, "%c", isprint(c) ? c : '.');
             } else {
                 pos += sprintf(line + pos, " ");
@@ -213,7 +214,7 @@ static void debugmalloc_dump_memory(char const* mem, size_t size) {
 /* dump data of allocated memory block.
  * if the canary is corrupted, it is also written to the log. */
 static void debugmalloc_dump_elem(DebugmallocEntry const* elem) {
-    bool canary_ok = debugmalloc_canary_ok(elem);
+    const bool canary_ok = debugmalloc_canary_ok(elem);
 
     debugmalloc_log("  %p, %u bajt, kanari: %s\n"
                     "  %s:%u, %s(%s)\n",
@@ -245,8 +246,8 @@ static void debugmalloc_dump(void) {
         "** DEBUGMALLOC DUMP ************************************\n");
     int cnt = 0;
     for (size_t i = 0; i < debugmalloc_tablesize; i++) {
-        DebugmallocEntry* head = &instance->head[i];
-        for (DebugmallocEntry* iter = head->next; iter->next != NULL;
+        const DebugmallocEntry* head = &instance->head[i];
+        for (const DebugmallocEntry* iter = head->next; iter->next != NULL;
              iter = iter->next) {
             ++cnt;
             debugmalloc_log("** %d/%d. rekord:\n", cnt, instance->alloc_count);
@@ -260,7 +261,7 @@ static void debugmalloc_dump(void) {
 /* called at program exit to dump data if there is a leak,
  * ie. allocated block remained. */
 static void debugmalloc_atexit_dump(void) {
-    DebugmallocData* instance = debugmalloc_singleton();
+    const DebugmallocData* instance = debugmalloc_singleton();
 
     if (instance->alloc_count > 0) {
         debugmalloc_log(
@@ -284,14 +285,14 @@ static void debugmalloc_atexit_dump(void) {
 static size_t debugmalloc_hash(void* address) {
     /* the last few bits are ignored, as they are usually zero for
      * alignment purposes. all tested architectures used 16 byte allocation. */
-    size_t cut = (size_t)address >> 4;
+    const size_t cut = (size_t)address >> 4;
     return cut % debugmalloc_tablesize;
 }
 
 /* insert element to hash table. */
 static void debugmalloc_insert(DebugmallocEntry* entry) {
     DebugmallocData* instance = debugmalloc_singleton();
-    size_t idx = debugmalloc_hash(entry->user_mem);
+    const size_t idx = debugmalloc_hash(entry->user_mem);
     DebugmallocEntry* head = &instance->head[idx];
     entry->prev = head;
     entry->next = head->next;
@@ -316,8 +317,8 @@ static void debugmalloc_remove(DebugmallocEntry* entry) {
  * @return the linked list entry, or null if not found. */
 static DebugmallocEntry* debugmalloc_find(void* mem) {
     DebugmallocData* instance = debugmalloc_singleton();
-    size_t idx = debugmalloc_hash(mem);
-    DebugmallocEntry* head = &instance->head[idx];
+    const size_t idx = debugmalloc_hash(mem);
+    const DebugmallocEntry* head = &instance->head[idx];
     for (DebugmallocEntry* iter = head->next; iter->next != NULL;
          iter = iter->next)
         if (iter->user_mem == mem)
@@ -326,15 +327,15 @@ static DebugmallocEntry* debugmalloc_find(void* mem) {
 }
 
 /* allocate memory. this function is called via the macro. */
-static void* debugmalloc_malloc_full(size_t size, char const* func,
+static void* debugmalloc_malloc_full(const size_t size, char const* func,
                                      char const* expr, char const* file,
-                                     unsigned line, bool zero) {
+                                     const unsigned line, const bool zero) {
     /* imitate standard malloc: return null if size is zero */
     if (size == 0)
         return NULL;
 
     /* check max size */
-    DebugmallocData* instance = debugmalloc_singleton();
+    const DebugmallocData* instance = debugmalloc_singleton();
     if (size > instance->max_block_size) {
         debugmalloc_log(
             "debugmalloc: %s @ %s:%u: a blokk merete tul nagy, %u bajt; "
@@ -399,7 +400,7 @@ static void debugmalloc_free_inner(DebugmallocEntry* deleted) {
  * program if a block is freed twice or the free function is called with an
  * invalid address. */
 static void debugmalloc_free_full(void* mem, char const* func, char const* file,
-                                  unsigned line) {
+                                  const unsigned line) {
     /* imitate standard free function: if ptr is null, no operation is performed
      */
     if (mem == NULL)
@@ -425,9 +426,9 @@ static void debugmalloc_free_full(void* mem, char const* func, char const* file,
 }
 
 /* realloc-like function. */
-static void* debugmalloc_realloc_full(void* oldmem, size_t newsize,
+static void* debugmalloc_realloc_full(void* oldmem, const size_t newsize,
                                       char const* func, char const* expr,
-                                      char const* file, unsigned line) {
+                                      char const* file, const unsigned line) {
     /* imitate standard realloc: equivalent to free if size is null. */
     if (newsize == 0) {
         debugmalloc_free_full(oldmem, func, file, line);
@@ -457,7 +458,7 @@ static void* debugmalloc_realloc_full(void* oldmem, size_t newsize,
          * NULL */
         return NULL;
     }
-    size_t smaller = oldentry->size < newsize ? oldentry->size : newsize;
+    const size_t smaller = oldentry->size < newsize ? oldentry->size : newsize;
     memcpy(newmem, oldmem, smaller);
     debugmalloc_free_inner(oldentry);
 

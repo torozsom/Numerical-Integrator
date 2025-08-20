@@ -30,8 +30,14 @@
  * - "ln": Computes the natural logarithm of a given number.
  * - "exp": Computes the exponential (e^x) of a given number.
  */
-const FunctionEntry FUNCTIONS[] = {{"sin", sin}, {"cos", cos}, {"tg", tan},
-                                   {"ctg", cot}, {"ln", log},  {"exp", exp}};
+const FunctionEntry FUNCTIONS[] = {
+    {"sin", sin},
+    {"cos", cos},
+    {"tg", tan},
+    {"ctg", cot},
+    {"ln", log},
+    {"exp", exp}
+};
 
 
 /**
@@ -240,14 +246,14 @@ Node* parse(char* expression) {
             node->left = pop(&stack);
             push(&stack, node);
         } else {
-            Func operation = find_function(token);
+            const Func operation = find_function(token);
             if (operation != NULL) {
                 Node* node = create_function(token, operation);
                 node->left = pop(&stack);
                 push(&stack, node);
             } else {
                 char* endptr;
-                double value = strtod(token, &endptr);
+                const double value = strtod(token, &endptr);
                 if (*endptr != '\0') {
                     fprintf(stderr,
                             "Error: Invalid token '%s' in expression.\n",
@@ -282,35 +288,35 @@ double evaluate(Node* head, const double x) {
         return 0.0;
 
     switch (head->type) {
-    case NODE_VARIABLE:
-        return x;
+        case NODE_VARIABLE:
+            return x;
 
-    case NODE_NUMBER:
-        return head->data.number.value;
+        case NODE_NUMBER:
+            return head->data.number.value;
 
-    case NODE_FUNCTION:
-        return head->data.function.func(evaluate(head->left, x));
+        case NODE_FUNCTION:
+            return head->data.function.func(evaluate(head->left, x));
 
-    case NODE_OPERATOR:
-        switch (head->data.operator.symbol) {
-        case '+':
-            return evaluate(head->left, x) + evaluate(head->right, x);
-        case '-':
-            return evaluate(head->left, x) - evaluate(head->right, x);
-        case '*':
-            return evaluate(head->left, x) * evaluate(head->right, x);
-        case '/':
-            return evaluate(head->left, x) / evaluate(head->right, x);
-        case '^':
-            return pow(evaluate(head->left, x), evaluate(head->right, x));
+        case NODE_OPERATOR:
+            switch (head->data.operator.symbol) {
+                case '+':
+                    return evaluate(head->left, x) + evaluate(head->right, x);
+                case '-':
+                    return evaluate(head->left, x) - evaluate(head->right, x);
+                case '*':
+                    return evaluate(head->left, x) * evaluate(head->right, x);
+                case '/':
+                    return evaluate(head->left, x) / evaluate(head->right, x);
+                case '^':
+                    return pow(evaluate(head->left, x), evaluate(head->right, x));
+                default:
+                    fprintf(stderr, "Error: Unknown operator '%c'.\n",
+                            head->data.operator.symbol);
+                    exit(1);
+            }
+
         default:
-            fprintf(stderr, "Error: Unknown operator '%c'.\n",
-                    head->data.operator.symbol);
+            fprintf(stderr, "Error: Unknown node type.\n");
             exit(1);
-        }
-
-    default:
-        fprintf(stderr, "Error: Unknown node type.\n");
-        exit(1);
     }
 }

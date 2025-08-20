@@ -184,7 +184,5 @@ Node* parse(char* expression);
 
 double evaluate(Node* head, double x);
 
-void free_tree(Node* node);
-
 
 #endif /* EXPRESSION_PARSER_H */
