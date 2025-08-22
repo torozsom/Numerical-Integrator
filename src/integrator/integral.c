@@ -200,6 +200,50 @@ double calculate_upper_Darboux_sum(Node* expression, const double start,
 
 
 /**
+ * @brief Executes a calculation function and measures the CPU time taken.
+ *
+ * This helper wraps a numerical calculation function, recording the CPU time
+ * required to execute it. The elapsed time in milliseconds is stored through
+ * the `elapsed_ms` pointer if it is not null.
+ *
+ * @param calculation_func Pointer to the calculation function to be timed.
+ * @param expression Parsed expression on which the calculation operates.
+ * @param start The beginning of the interval.
+ * @param end The end of the interval.
+ * @param dx Width of each subinterval.
+ * @param step Additional step parameter used by some calculations.
+ * @param elapsed_ms Output pointer for the measured time in milliseconds.
+ * @return The result of the calculation function.
+ */
+static double calculate_with_cpu_time(
+    double (*calculation_func)(Node*, double, double, double, double),
+    Node* expression, const double start, const double end, const double dx,
+    const double step, double* elapsed_ms) {
+    struct timespec start_time, end_time;
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start_time);
+    const double result =
+        calculation_func(expression, start, end, dx, step);
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end_time);
+    if (elapsed_ms != nullptr)
+        *elapsed_ms = timespec_diff_ms(&start_time, &end_time);
+    return result;
+}
+
+/**
+ * @brief Adapter function for measuring the Riemann sum.
+ *
+ * The generic timing helper expects calculation functions with a step
+ * parameter. This adapter allows the Riemann sum function, which does not use
+ * the step value, to be used with the timing helper.
+ */
+static double Riemann_sum_adapter(Node* expression, double start, double end,
+                                  double dx, double step) {
+    (void)step;
+    return calculate_Riemann_sum(expression, start, end, dx);
+}
+
+
+/**
  * @brief Computes the numerical integral of a given mathematical expression.
  *
  * This function performs numerical integration for a given mathematical
@@ -259,29 +303,21 @@ void integrate(char* integrand, char* interval) {
     // Size of each subinterval
     const double dx = (end - start) / refinement;
 
-    struct timespec start_time, end_time;
-
-    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start_time);
-    const double Riemann_sum =
-        calculate_Riemann_sum(expression, start, end, dx);
-    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end_time);
-    const double time_of_Riemann = timespec_diff_ms(&start_time, &end_time);
+    double time_of_Riemann;
+    const double Riemann_sum = calculate_with_cpu_time(
+        Riemann_sum_adapter, expression, start, end, dx, 0, &time_of_Riemann);
 
     constexpr double step = 1E-05; // The step size for evaluating the extremum
 
-    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start_time);
-    const double lower_Darboux_sum =
-        calculate_lower_Darboux_sum(expression, start, end, dx, step);
-    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end_time);
-    const double time_of_lower_Darboux =
-        timespec_diff_ms(&start_time, &end_time);
+    double time_of_lower_Darboux;
+    const double lower_Darboux_sum = calculate_with_cpu_time(
+        calculate_lower_Darboux_sum, expression, start, end, dx, step,
+        &time_of_lower_Darboux);
 
-    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start_time);
-    const double upper_Darboux_sum =
-        calculate_upper_Darboux_sum(expression, start, end, dx, step);
-    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end_time);
-    const double time_of_upper_Darboux =
-        timespec_diff_ms(&start_time, &end_time);
+    double time_of_upper_Darboux;
+    const double upper_Darboux_sum = calculate_with_cpu_time(
+        calculate_upper_Darboux_sum, expression, start, end, dx, step,
+        &time_of_upper_Darboux);
 
     const double time_spent[3] = {time_of_Riemann, time_of_lower_Darboux,
                             time_of_upper_Darboux};
