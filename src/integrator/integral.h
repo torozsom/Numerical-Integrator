@@ -29,6 +29,9 @@
 #define MAX_REFINEMENT 20000000
 
 
+typedef double (*calculation_func)(Node*, double, double, double, double);
+
+
 double calculate_Riemann_sum(Node* expression, double start, double end,
                              double dx);
 

@@ -38,7 +38,7 @@ double calculate_Riemann_sum(Node* expression, const double start,
     double Riemann_sum = 0;
     double x = start;
 
-    while (x <= end) {
+    while (x < end) {
         Riemann_sum += evaluate(expression, x) * dx;
         x += dx;
     }
@@ -114,7 +114,7 @@ double calculate_lower_Darboux_sum(Node* expression, const double start,
     double lower_Darboux_sum = 0;
     double x = start;
 
-    while (x <= end) {
+    while (x < end) {
         lower_Darboux_sum += find_infimum(expression, x, x + dx, step) * dx;
         x += dx;
     }
@@ -190,7 +190,7 @@ double calculate_upper_Darboux_sum(Node* expression, const double start,
     double upper_Darboux_sum = 0;
     double x = start;
 
-    while (x <= end) {
+    while (x < end) {
         upper_Darboux_sum += find_supremum(expression, x, x + dx, step) * dx;
         x += dx;
     }
@@ -206,7 +206,7 @@ double calculate_upper_Darboux_sum(Node* expression, const double start,
  * required to execute it. The elapsed time in milliseconds is stored through
  * the `elapsed_ms` pointer if it is not null.
  *
- * @param calculation_func Pointer to the calculation function to be timed.
+ * @param func Pointer to the calculation function to be timed.
  * @param expression Parsed expression on which the calculation operates.
  * @param start The beginning of the interval.
  * @param end The end of the interval.
@@ -215,17 +215,17 @@ double calculate_upper_Darboux_sum(Node* expression, const double start,
  * @param elapsed_ms Output pointer for the measured time in milliseconds.
  * @return The result of the calculation function.
  */
-static double calculate_with_cpu_time(
-    double (*calculation_func)(Node*, double, double, double, double),
-    Node* expression, const double start, const double end, const double dx,
-    const double step, double* elapsed_ms) {
+static double calculate_with_cpu_time(const calculation_func func, Node* expression,
+                                      const double start, const double end, const double dx,
+                                      const double step, double* elapsed_ms) {
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start_time);
-    const double result =
-        calculation_func(expression, start, end, dx, step);
+    const double result = func(expression, start, end, dx, step);
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end_time);
+
     if (elapsed_ms != nullptr)
         *elapsed_ms = timespec_diff_ms(&start_time, &end_time);
+
     return result;
 }
 
@@ -236,8 +236,8 @@ static double calculate_with_cpu_time(
  * parameter. This adapter allows the Riemann sum function, which does not use
  * the step value, to be used with the timing helper.
  */
-static double Riemann_sum_adapter(Node* expression, double start, double end,
-                                  double dx, double step) {
+static double Riemann_sum_adapter(Node* expression, const double start, const double end,
+                                  const double dx, const double step) {
     (void)step;
     return calculate_Riemann_sum(expression, start, end, dx);
 }

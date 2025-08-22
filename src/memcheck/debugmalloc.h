@@ -111,7 +111,8 @@ static DebugmallocData* debugmalloc_singleton(void) {
 }
 
 /* better version of strncpy, always terminates string with \0. */
-static void debugmalloc_strlcpy(char* dest, char const* src, const size_t destsize) {
+static void debugmalloc_strlcpy(char* dest, char const* src,
+                                const size_t destsize) {
     strncpy(dest, src, destsize);
     dest[destsize - 1] = '\0';
 }
