@@ -1,6 +1,5 @@
-# Numerical Integrator
-
 <div align="center">
+    <h1>Numerical Integrator</h1>
     <img src="https://img.shields.io/badge/language-C-blue.svg" alt="Language: C">
     <img src="https://img.shields.io/badge/UI-GTK3-green.svg" alt="UI: GTK3">
     <img src="https://img.shields.io/badge/Math-Integration-red.svg" alt="Math: Integration">
@@ -16,9 +15,16 @@
 
 The **Numerical Integrator** is a sophisticated C application designed to compute definite integrals of mathematical functions using multiple numerical methods. It combines powerful expression parsing, precise numerical integration algorithms, and an intuitive graphical user interface to provide a complete solution for mathematical integration problems.
 
+---
+
+## 📸 Screenshots
+
 <p align="center">
-    <em>Bridging the gap between mathematical computation and user-friendly software design</em>
+    <img src="assets/screenshot1.png" alt="Application Screenshot" width="1000">
+    <img src="assets/screenshot2.png" alt="Result Screenshot" width="500">
 </p>
+
+---
 
 ## 🚀 Features
 
@@ -39,23 +45,6 @@ The **Numerical Integrator** is a sophisticated C application designed to comput
   - Reverse Polish Notation (RPN) support
   - Abstract Syntax Tree (AST) representation
   - Efficient expression evaluation
-
-### Modern User Interface
-
-- **Sleek Design**:
-  - Modern gradient-based visual styling
-  - Responsive grid layouts
-  - Intuitive workflow progression
-
-- **Interactive Elements**:
-  - Mathematical buttons for easy input
-  - Smart text formatting
-  - Real-time input validation
-
-- **User Experience**:
-  - Context-sensitive button states
-  - Clear visual feedback
-  - Guided integration process
 
 ### System Design
 
@@ -102,8 +91,6 @@ src/
 └─────────────┘      └──────────────┘
 ```
 
-## 🧮 Core Components
-
 ### Numerical Integration Engine
 
 The integration module implements three different approaches:
@@ -130,98 +117,6 @@ Example: "2 x * 1 +" (representing 2*x + 1)
 
 This tree structure allows for efficient evaluation at any point within the integration interval.
 
-### Graphical User Interface
-
-The GUI provides a clean, modern interface with three main sections:
-
-1. **Function Input Area**:
-   ```
-   ┌─────────────────────────────────────┬──────────────────┐
-   │ Enter function: ∫ f(x) dx           │ ✓ Confirm Function│
-   └─────────────────────────────────────┴──────────────────┘
-   ```
-
-2. **Mathematical Button Matrix**:
-   ```
-   ┌─────┬─────┬─────┬─────┬─────┬─────┐
-   │  +  │  -  │  *  │  /  │  ^  │  x  │
-   ├─────┼─────┼─────┼─────┼─────┼─────┤
-   │ sin │ cos │ tg  │ ctg │ ln  │ exp │
-   └─────┴─────┴─────┴─────┴─────┴─────┘
-   ```
-
-3. **Integration Interval Section**:
-   ```
-   ┌─────────────────────┬─────────────────────┐
-   │ Lower bound (a)     │ Upper bound (b)     │
-   ├─────────────────────┴─────────────────────┤
-   │           🚀 Calculate Integral            │
-   └───────────────────────────────────────────┘
-   ```
-
-## 🔧 Core Functions
-
-### Integration Module
-
-```c
-// Main integration function
-void integrate(char *integrand, char *interval);
-
-// Compute Riemann sum approximation
-double calculate_Riemann_sum(Node* expression, double start, double end, double dx);
-
-// Compute lower and upper Darboux sum bounds
-double calculate_lower_Darboux_sum(Node* expression, double start, double end, double dx, double step);
-double calculate_upper_Darboux_sum(Node* expression, double start, double end, double dx, double step);
-```
-
-### Expression Parser
-
-```c
-// Parse RPN expression into abstract syntax tree
-Node* parse(char *expression);
-
-// Evaluate expression at a specific point
-double evaluate(Node *head, double x);
-
-// Create nodes for different elements
-Node* create_variable(char name);
-Node* create_number(double value);
-Node* create_function(const char *name, Func func);
-Node* create_operator(char symbol);
-```
-
-### User Interface
-
-```c
-// Initialize and run the GUI
-void run_gui(int* argc, char*** argv);
-
-// Apply CSS styling to the interface
-void apply_styling(const char *css_file_path);
-
-// Event handlers
-void insert_text(GtkWidget *button, gpointer user_data);
-void save_to_file(GtkWidget *button, gpointer user_data);
-void save_interval(GtkWidget *button, gpointer user_data);
-```
-
-### Controls Module
-
-```c
-// Input validation
-bool validate_integrand(const char *integrand);
-bool validate_interval(const char *interval, double *start, double *end);
-int get_partition_refinement();
-
-// Resource management
-void free_tree(Node *node);
-void free_resources(char *integrand, char *interval, Node *expression);
-
-// Integration workflow
-void numerical_integration(int argc, char *argv[], const char *filename);
-void integrate_last(const char *filename);
-```
 
 ## 🚀 Getting Started
 
@@ -318,42 +213,3 @@ Difference between Riemann-sum and average of the Darboux-sums = 0,062549
 | ln | Natural logarithm | `x ln` |
 | exp | Exponential function | `x exp` |
 
-## 🛠️ Advanced Features
-
-### Integration Methods
-
-The application provides three different numerical integration methods:
-
-1. **Riemann Sum**: Evaluates the function at the left endpoint of each subinterval
-2. **Lower Darboux Sum**: Finds the minimum value within each subinterval
-3. **Upper Darboux Sum**: Finds the maximum value within each subinterval
-
-The difference between upper and lower Darboux sums provides a rigorous error bound for the approximation.
-
-### Styling Customization
-
-The user interface appearance can be customized by modifying the `styles.css` file. The styling system includes:
-
-- Color schemes
-- Typography
-- Button appearances
-- Layout spacing
-- Visual effects
-
-### Error Handling
-
-The application includes comprehensive error handling:
-
-- Invalid expression detection
-- Improper interval formatting
-- Out-of-range refinement values
-- Memory allocation failures
-- File operation errors
-
----
-
-<p align="center">
-<em>Developed with ❤️ for mathematical precision and user experience</em>
-</p>
-
-*Last updated: July 2025*
